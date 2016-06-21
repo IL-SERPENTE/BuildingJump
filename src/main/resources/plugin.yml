@@ -1,0 +1,8 @@
+name: Bomberman
+main: net.samagames.bomberman.Bomberman
+version: 1.0.0
+author: Azuxul
+depend: [SamaGamesAPI]
+commands:
+  spawnpowerup:
+    usage: Commande de debug /spawnpowerup <type>
