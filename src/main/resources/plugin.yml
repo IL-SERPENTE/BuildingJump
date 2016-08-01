@@ -1,8 +1,6 @@
 name: Bomberman
-main: net.samagames.bomberman.Bomberman
+main: fr.azuxul.buildingjump.BuildingJumpPlugin
 version: 1.0.0
 author: Azuxul
 depend: [SamaGamesAPI]
 commands:
-  spawnpowerup:
-    usage: Commande de debug /spawnpowerup <type>

@@ -15,6 +15,10 @@ public class BuildingJumpPlugin extends JavaPlugin {
 
     private static BuildingJumpGame buildingJumpGame;
 
+    public static BuildingJumpGame getBuildingJumpGame() {
+        return buildingJumpGame;
+    }
+
     @Override
     public void onEnable() {
 
@@ -30,9 +34,5 @@ public class BuildingJumpPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerEvent(buildingJumpGame), this);
 
         getServer().getOnlinePlayers().forEach(player -> player.kickPlayer(ChatColor.RED + "Game loading"));
-    }
-
-    public static BuildingJumpGame getBuildingJumpGame() {
-        return buildingJumpGame;
     }
 }
