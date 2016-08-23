@@ -1,5 +1,10 @@
 {
   "locations": {
     "hub": "world, 0, 70, 0"
+  },
+  "jump-configuration": {
+    "hub-distance": 1000,
+    "jump-distance": 500,
+    "max-size": 200
   }
 }
