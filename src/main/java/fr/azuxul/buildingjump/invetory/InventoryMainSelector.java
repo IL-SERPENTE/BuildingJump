@@ -31,7 +31,12 @@ public class InventoryMainSelector implements InventoryHolder, IInventory {
 
     protected void initInventory() {
 
+        inventory.setItem(0, new ItemStack(Material.BRICK));
+    }
 
+    @Override
+    public void display() {
+        player.openInventory(inventory);
     }
 
     @Override

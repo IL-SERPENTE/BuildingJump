@@ -2,14 +2,18 @@ package fr.azuxul.buildingjump.event;
 
 import fr.azuxul.buildingjump.BuildingJumpGame;
 import fr.azuxul.buildingjump.invetory.IInventory;
+import fr.azuxul.buildingjump.invetory.InventoryMainSelector;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 import fr.azuxul.buildingjump.player.PlayerState;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.InventoryHolder;
 
@@ -35,6 +39,16 @@ public class PlayerEvent implements Listener {
 
         playerBuildingJump.setState(PlayerState.HUB);
         player.teleport(buildingJumpGame.getConfiguration().getHubLocation());
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+
+        if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK && event.getItem() != null) {
+            if (event.getItem().getType() == Material.BEACON) {
+                new InventoryMainSelector(buildingJumpGame, event.getPlayer()).display();
+            }
+        }
     }
 
     @EventHandler

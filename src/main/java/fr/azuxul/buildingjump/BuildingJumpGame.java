@@ -1,6 +1,5 @@
 package fr.azuxul.buildingjump;
 
-import fr.azuxul.buildingjump.jump.JumpAreaGenerator;
 import fr.azuxul.buildingjump.jump.JumpManager;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 import net.samagames.api.SamaGamesAPI;
@@ -10,7 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Game instance of BuildingJump plugin
@@ -39,6 +39,10 @@ public class BuildingJumpGame extends Game<PlayerBuildingJump> {
         this.playerInHub = new HashSet<>();
         this.playerInBuildAndTest = new HashSet<>();
 
+    }
+
+    public JumpManager getJumpManager() {
+        return jumpManager;
     }
 
     public Set<PlayerBuildingJump> getPlayerInHub() {

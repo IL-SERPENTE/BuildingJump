@@ -7,7 +7,7 @@ enum BlockType {
     NORMAL,
     CHECKPONT,
     START,
-    END,
+    END,;
 }
 
 /**

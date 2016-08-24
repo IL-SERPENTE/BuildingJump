@@ -1,9 +1,6 @@
 package fr.azuxul.buildingjump.invetory;
 
-import fr.azuxul.buildingjump.BuildingJumpGame;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -19,6 +16,8 @@ public interface IInventory {
      * @return boolean for chose if the player click is canceled
      */
     boolean click(ItemStack clickedItemStack);
+
+    void display();
 
     /**
      * Return the bukkit inventory object
