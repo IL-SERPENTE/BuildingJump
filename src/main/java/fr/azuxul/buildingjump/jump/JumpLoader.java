@@ -1,14 +1,10 @@
 package fr.azuxul.buildingjump.jump;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import org.bukkit.Material;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -37,9 +33,54 @@ public class JumpLoader {
 
         for (JsonElement element : json.get("blocks").getAsJsonArray()) {
             JsonObject object = element.getAsJsonObject();
-            blocks.add(new JumpBlock(Material.getMaterial(object.get("id").getAsInt()), object.get("value").getAsByte(), BlockType.values()[object.get("type").getAsInt()], object.get("z").getAsInt(), object.get("y").getAsInt(), object.get("z").getAsInt()));
+            blocks.add(new JumpBlock(Material.getMaterial(object.get("id").getAsInt()), object.get("value").getAsByte(), BlockType.values()[object.get("type").getAsInt()], object.get("x").getAsInt(), object.get("y").getAsInt(), object.get("z").getAsInt()));
         }
 
         return new Jump(json.get("name").getAsString(), UUID.fromString(json.get("owner-uuid").getAsString()), json.get("size").getAsInt(), blocks);
+    }
+
+    public static void saveJump(Jump jump) {
+
+        JsonObject json = new JsonObject();
+
+        json.add("name", new JsonPrimitive(jump.getName()));
+        json.add("owner-uuid", new JsonPrimitive(jump.getOwner().toString()));
+        json.add("size", new JsonPrimitive(jump.getSize()));
+
+        JsonArray array = new JsonArray();
+
+        for (JumpBlock j : jump.getBlocks()) {
+
+            JsonObject object = new JsonObject();
+
+            object.add("id", new JsonPrimitive(j.getMaterial().getId()));
+            object.add("value", new JsonPrimitive(j.getDataValue()));
+            object.add("type", new JsonPrimitive(j.getBlockType().getId()));
+            object.add("x", new JsonPrimitive(j.getX()));
+            object.add("y", new JsonPrimitive(j.getY()));
+            object.add("z", new JsonPrimitive(j.getZ()));
+
+            array.add(object);
+        }
+
+        json.add("blocks", array);
+
+        File f = new File("jumps/" + jump.getOwner().toString() + "-jump.json");
+
+        System.out.println(f.toString());
+
+        try {
+
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+            Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "utf-8"));
+
+            writer.write(json.toString());
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

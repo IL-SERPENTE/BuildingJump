@@ -44,9 +44,21 @@ public class PlayerBuildingJump extends GamePlayer {
         Jump jump = JumpLoader.loadJumpFromFile(new File("jumps/" + getUUID().toString() + "-jump.json"));
 
         if (jump == null) {
+
+            System.out.println("ok");
+
             jump = new Jump("Jump", getUUID(), 50, new HashSet<>());
         }
 
-        getPlayerIfOnline().teleport(buildingJumpGame.getJumpManager().registerJump(jump));
+        getPlayerIfOnline().teleport(buildingJumpGame.getJumpManager().registerJump(jump, this));
+    }
+
+    public void sendToHub() {
+        buildingJumpGame.getPlayerInBuildAndTest().remove(this);
+
+        if (!buildingJumpGame.getPlayerInHub().contains(this))
+            buildingJumpGame.getPlayerInHub().add(this);
+
+        getPlayerIfOnline().teleport(buildingJumpGame.getConfiguration().getHubLocation());
     }
 }

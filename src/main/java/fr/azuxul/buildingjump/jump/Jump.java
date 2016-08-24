@@ -34,6 +34,26 @@ public class Jump {
         this.effectBlocks = new HashSet<>();
     }
 
+    public UUID getOwner() {
+        return owner;
+    }
+
+    public Set<JumpBlock> getBlocks() {
+        return blocks;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void registerWorldLoc(Location location) {
         this.worldLoc = location;
     }
@@ -53,7 +73,7 @@ public class Jump {
         loaded = true;
     }
 
-    public void save() {
+    public void update(Location worldLoc) {
 
     }
 }

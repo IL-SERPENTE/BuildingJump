@@ -2,6 +2,7 @@ package fr.azuxul.buildingjump.event;
 
 import fr.azuxul.buildingjump.BuildingJumpGame;
 import fr.azuxul.buildingjump.invetory.IInventory;
+import fr.azuxul.buildingjump.invetory.InventoryJumpBuilder;
 import fr.azuxul.buildingjump.invetory.InventoryMainSelector;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 import fr.azuxul.buildingjump.player.PlayerState;
@@ -37,16 +38,17 @@ public class PlayerEvent implements Listener {
         Player player = event.getPlayer();
         PlayerBuildingJump playerBuildingJump = buildingJumpGame.getPlayer(player.getUniqueId());
 
-        playerBuildingJump.setState(PlayerState.HUB);
-        player.teleport(buildingJumpGame.getConfiguration().getHubLocation());
+        playerBuildingJump.sendToHub();
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
 
-        if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK && event.getItem() != null) {
+        if ((event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getItem() != null) {
             if (event.getItem().getType() == Material.BEACON) {
                 new InventoryMainSelector(buildingJumpGame, event.getPlayer()).display();
+            } else if (event.getItem().getType() == Material.APPLE) {
+                new InventoryJumpBuilder(buildingJumpGame, event.getPlayer()).display();
             }
         }
     }

@@ -1,6 +1,7 @@
 package fr.azuxul.buildingjump.invetory;
 
 import fr.azuxul.buildingjump.BuildingJumpGame;
+import fr.azuxul.buildingjump.jump.JumpLoader;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -9,21 +10,21 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Activity selector inventory
+ * Main inventory of jump builder
  *
  * @author Azuxul
  * @version 1.0
  */
-public class InventoryMainSelector implements InventoryHolder, IInventory {
+public class InventoryJumpBuilder implements InventoryHolder, IInventory {
 
     private final BuildingJumpGame buildingJumpGame;
     private final Player player;
     private final Inventory inventory;
 
-    public InventoryMainSelector(BuildingJumpGame buildingJumpGame, Player player) {
+    public InventoryJumpBuilder(BuildingJumpGame buildingJumpGame, Player player) {
 
         this.buildingJumpGame = buildingJumpGame;
-        this.inventory = buildingJumpGame.getServer().createInventory(this, 27, "Sélection de serveur");
+        this.inventory = buildingJumpGame.getServer().createInventory(this, 27, "...");
         this.player = player;
 
         initInventory();
@@ -31,7 +32,7 @@ public class InventoryMainSelector implements InventoryHolder, IInventory {
 
     protected void initInventory() {
 
-        inventory.setItem(0, new ItemStack(Material.BRICK));
+        inventory.setItem(0, new ItemStack(Material.WOOD_DOOR));
     }
 
     @Override
@@ -49,11 +50,12 @@ public class InventoryMainSelector implements InventoryHolder, IInventory {
 
         PlayerBuildingJump playerBuildingJump = buildingJumpGame.getPlayer(player);
 
-        if(Material.BRICK.equals(itemStack.getType())) {
-            playerBuildingJump.sendToBuild();
+        if (Material.WOOD_DOOR.equals(itemStack.getType())) {
+
+            JumpLoader.saveJump(buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump));
+            playerBuildingJump.sendToHub();
         }
 
         return true;
     }
 }
-
