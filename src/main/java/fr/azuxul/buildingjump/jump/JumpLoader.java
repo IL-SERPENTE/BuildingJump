@@ -3,6 +3,7 @@ package fr.azuxul.buildingjump.jump;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import fr.azuxul.buildingjump.BuildingJumpGame;
+import org.bukkit.Location;
 import org.bukkit.Material;
 
 import java.io.*;
@@ -46,7 +47,7 @@ public class JumpLoader {
 
         }
 
-        return new Jump(json.get("name").getAsString(), UUID.fromString(json.get("owner-uuid").getAsString()), json.get("size").getAsInt(), blocks, buildingJumpGame);
+        return new Jump(json.get("name").getAsString(), UUID.fromString(json.get("owner-uuid").getAsString()), json.get("size").getAsInt(), blocks, buildingJumpGame, false, stringLocationToSpawnLocation((json.get("spawn").getAsString())));
     }
 
     public static void saveJump(Jump jump) {
@@ -56,6 +57,7 @@ public class JumpLoader {
         json.add("name", new JsonPrimitive(jump.getName()));
         json.add("owner-uuid", new JsonPrimitive(jump.getOwner().toString()));
         json.add("size", new JsonPrimitive(jump.getSize()));
+        json.add("spawn", new JsonPrimitive(spawnLocationToStringLocation(jump.getSpawnInJump())));
 
         JsonArray array = new JsonArray();
 
@@ -131,5 +133,27 @@ public class JumpLoader {
         }
 
         return new JumpLocation(Integer.parseInt(loc[0]), Integer.parseInt(loc[1]), Integer.parseInt(loc[2]));
+    }
+
+    public static String spawnLocationToStringLocation(Location spawn) {
+        return Double.toString(spawn.getX()) + "," + Double.toString(spawn.getY()) + "," + Double.toString(spawn.getZ()) + "," + Float.toString(spawn.getYaw()) + "," + Float.toString(spawn.getPitch());
+    }
+
+    public static Location stringLocationToSpawnLocation(String location) {
+
+        String[] loc = location.split(",");
+
+        if (loc.length <= 0) {
+            loc = location.split(", ");
+            if (loc.length <= 0) {
+                return null;
+            }
+        }
+
+        if (loc.length < 5) {
+            return null;
+        }
+
+        return new Location(null, Double.parseDouble(loc[0]), Double.parseDouble(loc[1]), Double.parseDouble(loc[2]), Float.parseFloat(loc[3]), Float.parseFloat(loc[4]));
     }
 }

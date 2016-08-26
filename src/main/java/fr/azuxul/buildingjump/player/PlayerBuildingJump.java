@@ -6,6 +6,8 @@ import fr.azuxul.buildingjump.GUIItems;
 import fr.azuxul.buildingjump.jump.Jump;
 import fr.azuxul.buildingjump.jump.JumpLoader;
 import net.samagames.api.games.GamePlayer;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -47,7 +49,7 @@ public class PlayerBuildingJump extends GamePlayer {
 
         if (jump == null) {
 
-            jump = new Jump("Jump", getUUID(), 50, new HashMap<>(), buildingJumpGame, true);
+            jump = new Jump("Jump", getUUID(), 50, new HashMap<>(), buildingJumpGame, true, new Location(null, 0, 3, 0, 0, 0));
         }
 
         state = PlayerState.BUILD;
@@ -57,9 +59,12 @@ public class PlayerBuildingJump extends GamePlayer {
         inventory.clear();
         inventory.setItem(0, GUIItems.BUILD_MENU.getItemStack());
 
+        buildingJumpGame.getJumpManager().registerJump(jump, this);
+
         getPlayerIfOnline().setAllowFlight(true);
         getPlayerIfOnline().setFlying(true);
-        getPlayerIfOnline().teleport(buildingJumpGame.getJumpManager().registerJump(jump, this).add(0, 2, 0));
+        getPlayerIfOnline().teleport(jump.getSpawn());
+        getPlayerIfOnline().setGameMode(GameMode.CREATIVE);
     }
 
     public void sendToHub() {
@@ -75,7 +80,7 @@ public class PlayerBuildingJump extends GamePlayer {
         inventory.clear();
         inventory.setItem(0, GUIItems.HUB_MENU.getItemStack());
 
+        getPlayerIfOnline().setGameMode(GameMode.ADVENTURE);
         getPlayerIfOnline().teleport(buildingJumpGame.getConfiguration().getHubLocation());
-
     }
 }

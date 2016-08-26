@@ -6,6 +6,8 @@ import fr.azuxul.buildingjump.invetory.InventoryGUI;
 import fr.azuxul.buildingjump.jump.BlockType;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 import fr.azuxul.buildingjump.player.PlayerState;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -46,6 +48,8 @@ public class PlayerEvent implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
 
+        PlayerBuildingJump playerBuildingJump = buildingJumpGame.getPlayer(event.getPlayer());
+
         if ((event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getItem() != null) {
             for (GUIItems guiItems : GUIItems.values()) {
                 if (guiItems.getItemStack().isSimilar(event.getItem())) {
@@ -61,6 +65,19 @@ public class PlayerEvent implements Listener {
                     } catch (InvocationTargetException e) {
                         e.printStackTrace();
                     }
+
+                    return;
+                }
+            }
+
+            if (event.getItem().getType().isBlock() && playerBuildingJump.getState().equals(PlayerState.BUILD) && event.getPlayer().isSneaking() && event.getPlayer().isFlying()) {
+
+                Block block = event.getPlayer().getLocation().clone().add(0, -1, 0).getBlock();
+
+                block.setTypeIdAndData(event.getItem().getType().getId(), event.getItem().getData().getData(), true);
+                if (!buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump).update(block, BlockType.NORMAL)) {
+                    block.setTypeIdAndData(Material.AIR.getId(), (byte) 0, true);
+                    event.getPlayer().sendMessage("e");
                 }
             }
         }
@@ -112,7 +129,10 @@ public class PlayerEvent implements Listener {
         PlayerBuildingJump playerBuildingJump = buildingJumpGame.getPlayer(event.getPlayer());
 
         if (playerBuildingJump.getState().equals(PlayerState.BUILD)) {
-            buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump).update(event.getBlock(), BlockType.NORMAL);
+            if (!buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump).update(event.getBlock(), BlockType.NORMAL)) {
+                event.setCancelled(true);
+                event.getPlayer().sendMessage("e");
+            }
         } else {
             event.setCancelled(true);
         }
@@ -124,7 +144,10 @@ public class PlayerEvent implements Listener {
         PlayerBuildingJump playerBuildingJump = buildingJumpGame.getPlayer(event.getPlayer());
         if (playerBuildingJump.getState().equals(PlayerState.BUILD)) {
             buildingJumpGame.getServer().getScheduler().runTaskLater(buildingJumpGame.getPlugin(), () -> {
-                buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump).update(event.getBlock(), BlockType.NORMAL);
+                if (!buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump).update(event.getBlock(), BlockType.NORMAL)) {
+                    event.getPlayer().sendMessage("e");
+                    event.setCancelled(true);
+                }
             }, 1L);
         } else {
             event.setCancelled(true);

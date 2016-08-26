@@ -25,15 +25,17 @@ public class Jump {
 
     private String name;
     private Location worldLoc;
+    private Location spawn;
     private boolean loaded;
 
-    public Jump(String name, UUID owner, int size, Map<JumpLocation, JumpBlock> blocks, BuildingJumpGame buildingJumpGame, boolean newJump) {
+    public Jump(String name, UUID owner, int size, Map<JumpLocation, JumpBlock> blocks, BuildingJumpGame buildingJumpGame, boolean newJump, Location spawn) {
 
         this.name = name;
         this.owner = owner;
         this.size = size;
         this.blocks = blocks;
         this.buildingJumpGame = buildingJumpGame;
+        this.spawn = spawn;
 
         this.effectBlocks = new HashMap<>();
         this.firstInit = newJump;
@@ -41,7 +43,7 @@ public class Jump {
 
     public Jump(String name, UUID owner, int size, Map<JumpLocation, JumpBlock> blocks, BuildingJumpGame buildingJumpGame) {
 
-        this(name, owner, size, blocks, buildingJumpGame, false);
+        this(name, owner, size, blocks, buildingJumpGame, false, new Location(null, 0, 3, 0, 0, 0));
     }
 
     public UUID getOwner() {
@@ -97,10 +99,38 @@ public class Jump {
         loaded = true;
     }
 
-    public void update(Block updatedBlock, BlockType blockType) {
+    public boolean update(Block updatedBlock, BlockType blockType) {
 
-        System.out.println("ok");
+        int x = updatedBlock.getX() - worldLoc.getBlockX();
+        int y = updatedBlock.getY() - worldLoc.getBlockY();
+        int z = updatedBlock.getZ() - worldLoc.getBlockZ();
 
-        blocks.put(new JumpLocation(updatedBlock.getX() - worldLoc.getBlockX(), updatedBlock.getY() - worldLoc.getBlockY(), updatedBlock.getZ() - worldLoc.getBlockZ()), new JumpBlock(updatedBlock.getType(), updatedBlock.getData(), blockType));
+        if (Math.abs(x) >= size || Math.abs(z) >= size) {
+            return false;
+        } else {
+            blocks.put(new JumpLocation(x, y, z), new JumpBlock(updatedBlock.getType(), updatedBlock.getData(), blockType));
+            return true;
+        }
+    }
+
+    public Location getSpawnInJump() {
+        return spawn.clone();
+    }
+
+    public Location getSpawn() {
+        spawn.setWorld(worldLoc.getWorld());
+
+        Location spawnRealLoc = worldLoc.clone().add(spawn);
+
+        spawnRealLoc.setYaw(spawn.getYaw());
+        spawnRealLoc.setPitch(spawn.getPitch());
+
+        return spawnRealLoc;
+    }
+
+    public void setSpawn(Location spawn) {
+        this.spawn = spawn.clone().subtract(worldLoc);
+        this.spawn.setYaw(spawn.getYaw());
+        this.spawn.setPitch(spawn.getPitch());
     }
 }
