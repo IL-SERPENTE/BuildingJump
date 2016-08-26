@@ -3,6 +3,7 @@ package fr.azuxul.buildingjump;
 import com.google.gson.JsonObject;
 import net.samagames.tools.LocationUtils;
 import org.bukkit.Location;
+import org.bukkit.Material;
 
 /**
  * Configuration class of this game
@@ -43,5 +44,9 @@ public class Configuration {
 
     public int getJumpDistanceFromJump() {
         return jumpDistanceFromJump;
+    }
+
+    public Material getDefaultPlatformMaterial() {
+        return Material.CLAY;
     }
 }

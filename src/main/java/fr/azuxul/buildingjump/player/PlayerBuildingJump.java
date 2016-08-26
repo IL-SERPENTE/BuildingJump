@@ -43,12 +43,14 @@ public class PlayerBuildingJump extends GamePlayer {
         if(!buildingJumpGame.getPlayerInBuildAndTest().contains(this))
             buildingJumpGame.getPlayerInBuildAndTest().add(this);
 
-        Jump jump = JumpLoader.loadJumpFromFile(new File("jumps/" + getUUID().toString() + "-jump.json"));
+        Jump jump = JumpLoader.loadJumpFromFile(new File("jumps/" + getUUID().toString() + "-jump.json"), buildingJumpGame);
 
         if (jump == null) {
 
-            jump = new Jump("Jump", getUUID(), 50, new HashSet<>());
+            jump = new Jump("Jump", getUUID(), 50, new HashSet<>(), buildingJumpGame, true);
         }
+
+        state = PlayerState.BUILD;
 
         Inventory inventory = getPlayerIfOnline().getInventory();
 
@@ -57,7 +59,7 @@ public class PlayerBuildingJump extends GamePlayer {
 
         getPlayerIfOnline().setAllowFlight(true);
         getPlayerIfOnline().setFlying(true);
-        getPlayerIfOnline().teleport(buildingJumpGame.getJumpManager().registerJump(jump, this));
+        getPlayerIfOnline().teleport(buildingJumpGame.getJumpManager().registerJump(jump, this).add(0, 2, 0));
     }
 
     public void sendToHub() {
@@ -66,15 +68,14 @@ public class PlayerBuildingJump extends GamePlayer {
         if (!buildingJumpGame.getPlayerInHub().contains(this))
             buildingJumpGame.getPlayerInHub().add(this);
 
+        state = PlayerState.HUB;
+
         Inventory inventory = getPlayerIfOnline().getInventory();
 
         inventory.clear();
         inventory.setItem(0, GUIItems.HUB_MENU.getItemStack());
 
-        getPlayerIfOnline().closeInventory();
         getPlayerIfOnline().teleport(buildingJumpGame.getConfiguration().getHubLocation());
-
-        System.out.println(buildingJumpGame.getConfiguration().getHubLocation());
 
     }
 }

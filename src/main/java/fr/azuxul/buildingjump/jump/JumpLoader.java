@@ -2,6 +2,7 @@ package fr.azuxul.buildingjump.jump;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
+import fr.azuxul.buildingjump.BuildingJumpGame;
 import org.bukkit.Material;
 
 import java.io.*;
@@ -20,9 +21,9 @@ public class JumpLoader {
     private JumpLoader() {
     }
 
-    public static Jump loadJumpFromFile(File file) {
+    public static Jump loadJumpFromFile(File file, BuildingJumpGame buildingJumpGame) {
 
-        JsonObject json = null;
+        JsonObject json;
         try {
             json = new JsonParser().parse(new JsonReader(new FileReader(file))).getAsJsonObject();
         } catch (FileNotFoundException e) {
@@ -36,7 +37,7 @@ public class JumpLoader {
             blocks.add(new JumpBlock(Material.getMaterial(object.get("id").getAsInt()), object.get("value").getAsByte(), BlockType.values()[object.get("type").getAsInt()], object.get("x").getAsInt(), object.get("y").getAsInt(), object.get("z").getAsInt()));
         }
 
-        return new Jump(json.get("name").getAsString(), UUID.fromString(json.get("owner-uuid").getAsString()), json.get("size").getAsInt(), blocks);
+        return new Jump(json.get("name").getAsString(), UUID.fromString(json.get("owner-uuid").getAsString()), json.get("size").getAsInt(), blocks, buildingJumpGame);
     }
 
     public static void saveJump(Jump jump) {
@@ -66,8 +67,6 @@ public class JumpLoader {
         json.add("blocks", array);
 
         File f = new File("jumps/" + jump.getOwner().toString() + "-jump.json");
-
-        System.out.println(f.toString());
 
         try {
 

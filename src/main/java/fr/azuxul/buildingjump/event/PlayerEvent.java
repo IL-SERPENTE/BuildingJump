@@ -66,9 +66,10 @@ public class PlayerEvent implements Listener {
     @EventHandler
     public void onPlayerClick(InventoryClickEvent event) {
 
+        PlayerBuildingJump playerBuildingJump = buildingJumpGame.getPlayer(event.getWhoClicked().getUniqueId());
         InventoryHolder inventoryHolder = event.getInventory().getHolder();
 
-        event.setCancelled(true);
+        event.setCancelled(!playerBuildingJump.getState().equals(PlayerState.BUILD));
 
         if (event.getCurrentItem() != null && inventoryHolder != null && inventoryHolder instanceof InventoryGUI) {
 
@@ -106,5 +107,11 @@ public class PlayerEvent implements Listener {
         PlayerBuildingJump playerBuildingJump = buildingJumpGame.getPlayer(event.getPlayer());
 
         event.setCancelled(!PlayerState.BUILD.equals(playerBuildingJump.getState()));
+
+        for (GUIItems item : GUIItems.values()) {
+            if (event.getItemInHand().isSimilar(item.getItemStack())) {
+                event.setCancelled(true);
+            }
+        }
     }
 }
