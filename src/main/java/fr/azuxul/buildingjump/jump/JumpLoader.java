@@ -6,9 +6,7 @@ import fr.azuxul.buildingjump.BuildingJumpGame;
 import org.bukkit.Material;
 
 import java.io.*;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Jump file loader
@@ -25,16 +23,27 @@ public class JumpLoader {
 
         JsonObject json;
         try {
-            json = new JsonParser().parse(new JsonReader(new FileReader(file))).getAsJsonObject();
+            JsonElement element = new JsonParser().parse(new JsonReader(new FileReader(file)));
+
+            if (element == null || element.isJsonNull())
+                return null;
+            else
+                json = element.getAsJsonObject();
         } catch (FileNotFoundException e) {
             return null;
         }
 
-        Set<JumpBlock> blocks = new HashSet<>();
+        Map<JumpLocation, JumpBlock> blocks = new HashMap<>();
 
         for (JsonElement element : json.get("blocks").getAsJsonArray()) {
             JsonObject object = element.getAsJsonObject();
-            blocks.add(new JumpBlock(Material.getMaterial(object.get("id").getAsInt()), object.get("value").getAsByte(), BlockType.values()[object.get("type").getAsInt()], object.get("x").getAsInt(), object.get("y").getAsInt(), object.get("z").getAsInt()));
+
+            JumpBlock jumpBlock = new JumpBlock(Material.getMaterial(object.get("id").getAsInt()), object.get("value").getAsByte(), BlockType.values()[object.get("type").getAsInt()]);
+
+            for (JsonElement loc : object.get("locations").getAsJsonArray()) {
+                blocks.put(stringLocationToJumpLocation(loc.getAsString()), jumpBlock);
+            }
+
         }
 
         return new Jump(json.get("name").getAsString(), UUID.fromString(json.get("owner-uuid").getAsString()), json.get("size").getAsInt(), blocks, buildingJumpGame);
@@ -50,19 +59,36 @@ public class JumpLoader {
 
         JsonArray array = new JsonArray();
 
-        for (JumpBlock j : jump.getBlocks()) {
+        Map<JumpBlock, List<JumpLocation>> blocks = new HashMap<>();
 
+        jump.getBlocks().entrySet().forEach(e -> {
+
+            if (blocks.containsKey(e.getValue())) {
+                blocks.get(e.getValue()).add(e.getKey());
+            } else {
+                List<JumpLocation> jumpLocationList = new ArrayList<>();
+
+                jumpLocationList.add(e.getKey());
+                blocks.put(e.getValue(), jumpLocationList);
+            }
+        });
+
+        blocks.entrySet().forEach(e -> {
             JsonObject object = new JsonObject();
 
-            object.add("id", new JsonPrimitive(j.getMaterial().getId()));
-            object.add("value", new JsonPrimitive(j.getDataValue()));
-            object.add("type", new JsonPrimitive(j.getBlockType().getId()));
-            object.add("x", new JsonPrimitive(j.getX()));
-            object.add("y", new JsonPrimitive(j.getY()));
-            object.add("z", new JsonPrimitive(j.getZ()));
+            object.add("id", new JsonPrimitive(e.getKey().getMaterial().getId()));
+            object.add("value", new JsonPrimitive(e.getKey().getDataValue()));
+            object.add("type", new JsonPrimitive(e.getKey().getBlockType().getId()));
+
+            JsonArray locArray = new JsonArray();
+
+            for (JumpLocation jumpLocation : e.getValue())
+                locArray.add(new JsonPrimitive(jumpLocationToStringLocation(jumpLocation)));
+
+            object.add("locations", locArray);
 
             array.add(object);
-        }
+        });
 
         json.add("blocks", array);
 
@@ -81,5 +107,27 @@ public class JumpLoader {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String jumpLocationToStringLocation(JumpLocation jumpLocation) {
+        return Integer.toString(jumpLocation.getX()) + "," + Integer.toString(jumpLocation.getY()) + "," + Integer.toString(jumpLocation.getZ());
+    }
+
+    public static JumpLocation stringLocationToJumpLocation(String location) {
+
+        String[] loc = location.split(",");
+
+        if (loc.length <= 0) {
+            loc = location.split(", ");
+            if (loc.length <= 0) {
+                return null;
+            }
+        }
+
+        if (loc.length < 3) {
+            return null;
+        }
+
+        return new JumpLocation(Integer.parseInt(loc[0]), Integer.parseInt(loc[1]), Integer.parseInt(loc[2]));
     }
 }

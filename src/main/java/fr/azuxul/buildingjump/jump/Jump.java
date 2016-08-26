@@ -4,8 +4,8 @@ import fr.azuxul.buildingjump.BuildingJumpGame;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -17,8 +17,8 @@ import java.util.UUID;
 public class Jump {
 
     private final UUID owner;
-    private final Set<JumpBlock> blocks;
-    private final Set<JumpBlock> effectBlocks;
+    private final Map<JumpLocation, JumpBlock> blocks;
+    private final Map<JumpLocation, JumpBlock> effectBlocks;
     private final int size;
     private final boolean firstInit;
     private final BuildingJumpGame buildingJumpGame;
@@ -27,7 +27,7 @@ public class Jump {
     private Location worldLoc;
     private boolean loaded;
 
-    public Jump(String name, UUID owner, int size, Set<JumpBlock> blocks, BuildingJumpGame buildingJumpGame, boolean newJump) {
+    public Jump(String name, UUID owner, int size, Map<JumpLocation, JumpBlock> blocks, BuildingJumpGame buildingJumpGame, boolean newJump) {
 
         this.name = name;
         this.owner = owner;
@@ -35,11 +35,11 @@ public class Jump {
         this.blocks = blocks;
         this.buildingJumpGame = buildingJumpGame;
 
-        this.effectBlocks = new HashSet<>();
+        this.effectBlocks = new HashMap<>();
         this.firstInit = newJump;
     }
 
-    public Jump(String name, UUID owner, int size, Set<JumpBlock> blocks, BuildingJumpGame buildingJumpGame) {
+    public Jump(String name, UUID owner, int size, Map<JumpLocation, JumpBlock> blocks, BuildingJumpGame buildingJumpGame) {
 
         this(name, owner, size, blocks, buildingJumpGame, false);
     }
@@ -48,7 +48,7 @@ public class Jump {
         return owner;
     }
 
-    public Set<JumpBlock> getBlocks() {
+    public Map<JumpLocation, JumpBlock> getBlocks() {
         return blocks;
     }
 
@@ -75,18 +75,21 @@ public class Jump {
 
         effectBlocks.clear();
 
-        for (JumpBlock b : blocks) {
+        blocks.entrySet().forEach(e -> {
 
-            Block block = worldLoc.clone().add(b.getX(), b.getY(), b.getZ()).getBlock();
+            Block block = worldLoc.clone().add(e.getKey().getX(), e.getKey().getY(), e.getKey().getZ()).getBlock();
 
-            block.setTypeIdAndData(b.getMaterial().getId(), b.getDataValue(), true);
-            effectBlocks.add(b);
-        }
+            block.setTypeIdAndData(e.getValue().getMaterial().getId(), e.getValue().getDataValue(), true);
+
+            if (!e.getValue().getBlockType().equals(BlockType.NORMAL))
+                effectBlocks.put(e.getKey(), e.getValue());
+        });
 
         if (firstInit) {
             for (int x = -2; x < 2; x++) {
                 for (int z = -2; z < 2; z++) {
                     worldLoc.clone().add(x, 0, z).getBlock().setType(buildingJumpGame.getConfiguration().getDefaultPlatformMaterial());
+                    blocks.put(new JumpLocation(x, 0, z), new JumpBlock(buildingJumpGame.getConfiguration().getDefaultPlatformMaterial(), (byte) 0, BlockType.NORMAL));
                 }
             }
         }

@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import java.io.File;
-import java.util.HashSet;
+import java.util.HashMap;
 
 /**
  * Game player class of BuildingJump
@@ -47,7 +47,7 @@ public class PlayerBuildingJump extends GamePlayer {
 
         if (jump == null) {
 
-            jump = new Jump("Jump", getUUID(), 50, new HashSet<>(), buildingJumpGame, true);
+            jump = new Jump("Jump", getUUID(), 50, new HashMap<>(), buildingJumpGame, true);
         }
 
         state = PlayerState.BUILD;

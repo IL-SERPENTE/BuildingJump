@@ -2,6 +2,8 @@ package fr.azuxul.buildingjump.jump;
 
 import org.bukkit.Material;
 
+import java.util.Objects;
+
 enum BlockType {
 
     NORMAL(0),
@@ -28,18 +30,11 @@ enum BlockType {
  */
 public class JumpBlock {
 
-    private final int x;
-    private final int y;
-    private final int z;
     private Material material;
     private byte dataValue;
     private BlockType blockType;
 
-    public JumpBlock(Material material, byte dataValue, BlockType blockType, int x, int y, int z) {
-
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public JumpBlock(Material material, byte dataValue, BlockType blockType) {
 
         this.material = material;
         this.dataValue = dataValue;
@@ -58,15 +53,20 @@ public class JumpBlock {
         return blockType;
     }
 
-    public int getX() {
-        return x;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        JumpBlock jumpBlock = (JumpBlock) o;
+        return dataValue == jumpBlock.dataValue && material == jumpBlock.material && blockType == jumpBlock.blockType;
     }
 
-    public int getY() {
-        return y;
-    }
-
-    public int getZ() {
-        return z;
+    @Override
+    public int hashCode() {
+        return Objects.hash(material, dataValue, blockType);
     }
 }
