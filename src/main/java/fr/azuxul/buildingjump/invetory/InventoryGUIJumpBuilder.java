@@ -15,34 +15,26 @@ import org.bukkit.inventory.ItemStack;
  * @author Azuxul
  * @version 1.0
  */
-public class InventoryJumpBuilder implements InventoryHolder, IInventory {
+public class InventoryGUIJumpBuilder extends InventoryGUI implements InventoryHolder {
 
     private final BuildingJumpGame buildingJumpGame;
     private final Player player;
     private final Inventory inventory;
 
-    public InventoryJumpBuilder(BuildingJumpGame buildingJumpGame, Player player) {
+    public InventoryGUIJumpBuilder(BuildingJumpGame buildingJumpGame, Player player) {
+
+        super(buildingJumpGame, player, 27, "...");
 
         this.buildingJumpGame = buildingJumpGame;
-        this.inventory = buildingJumpGame.getServer().createInventory(this, 27, "...");
+        this.inventory = getInventory();
         this.player = player;
 
         initInventory();
     }
 
-    protected void initInventory() {
+    private void initInventory() {
 
         inventory.setItem(0, new ItemStack(Material.WOOD_DOOR));
-    }
-
-    @Override
-    public void display() {
-        player.openInventory(inventory);
-    }
-
-    @Override
-    public Inventory getInventory() {
-        return inventory;
     }
 
     @Override

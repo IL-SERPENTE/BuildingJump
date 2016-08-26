@@ -4,8 +4,6 @@ import fr.azuxul.buildingjump.BuildingJumpGame;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -14,34 +12,24 @@ import org.bukkit.inventory.ItemStack;
  * @author Azuxul
  * @version 1.0
  */
-public class InventoryMainSelector implements InventoryHolder, IInventory {
+public class InventoryGUIMainSelector extends InventoryGUI {
 
     private final BuildingJumpGame buildingJumpGame;
     private final Player player;
-    private final Inventory inventory;
 
-    public InventoryMainSelector(BuildingJumpGame buildingJumpGame, Player player) {
+    public InventoryGUIMainSelector(BuildingJumpGame buildingJumpGame, Player player) {
 
+
+        super(buildingJumpGame, player, 27, "");
         this.buildingJumpGame = buildingJumpGame;
-        this.inventory = buildingJumpGame.getServer().createInventory(this, 27, "Sélection de serveur");
         this.player = player;
 
         initInventory();
     }
 
-    protected void initInventory() {
+    private void initInventory() {
 
-        inventory.setItem(0, new ItemStack(Material.BRICK));
-    }
-
-    @Override
-    public void display() {
-        player.openInventory(inventory);
-    }
-
-    @Override
-    public Inventory getInventory() {
-        return inventory;
+        getInventory().setItem(0, new ItemStack(Material.BRICK));
     }
 
     @Override

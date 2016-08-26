@@ -1,12 +1,10 @@
 package fr.azuxul.buildingjump.event;
 
 import fr.azuxul.buildingjump.BuildingJumpGame;
-import fr.azuxul.buildingjump.invetory.IInventory;
-import fr.azuxul.buildingjump.invetory.InventoryJumpBuilder;
-import fr.azuxul.buildingjump.invetory.InventoryMainSelector;
+import fr.azuxul.buildingjump.GUIItems;
+import fr.azuxul.buildingjump.invetory.InventoryGUI;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 import fr.azuxul.buildingjump.player.PlayerState;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,6 +15,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.InventoryHolder;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Player events
@@ -45,10 +45,20 @@ public class PlayerEvent implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
 
         if ((event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getItem() != null) {
-            if (event.getItem().getType() == Material.BEACON) {
-                new InventoryMainSelector(buildingJumpGame, event.getPlayer()).display();
-            } else if (event.getItem().getType() == Material.APPLE) {
-                new InventoryJumpBuilder(buildingJumpGame, event.getPlayer()).display();
+            for (GUIItems guiItems : GUIItems.values()) {
+                if (guiItems.getItemStack().isSimilar(event.getItem())) {
+                    try {
+                        InventoryGUI inventoryGUI = (InventoryGUI) guiItems.getInventoryClass().getConstructors()[0].newInstance(buildingJumpGame, event.getPlayer());
+                        inventoryGUI.display();
+
+                    } catch (InstantiationException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
@@ -60,9 +70,9 @@ public class PlayerEvent implements Listener {
 
         event.setCancelled(true);
 
-        if (event.getCurrentItem() != null && inventoryHolder != null && inventoryHolder instanceof IInventory) {
+        if (event.getCurrentItem() != null && inventoryHolder != null && inventoryHolder instanceof InventoryGUI) {
 
-            IInventory customInventory = (IInventory) inventoryHolder;
+            InventoryGUI customInventory = (InventoryGUI) inventoryHolder;
 
             event.setCancelled(customInventory.click(event.getCurrentItem()));
         }

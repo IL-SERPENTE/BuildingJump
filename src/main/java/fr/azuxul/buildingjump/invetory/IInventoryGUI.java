@@ -1,12 +1,15 @@
 package fr.azuxul.buildingjump.invetory;
 
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Interface of custom inventory of buildingjump
+ * IInventory interface
+ *
+ * @author Azuxul
+ * @version 1.0
  */
-public interface IInventory {
+@FunctionalInterface
+interface IInventoryGUI {
 
     /**
      * This method was called when player click
@@ -16,15 +19,4 @@ public interface IInventory {
      * @return boolean for chose if the player click is canceled
      */
     boolean click(ItemStack clickedItemStack);
-
-    void display();
-
-    /**
-     * Return the bukkit inventory object
-     * of this inventory
-     *
-     * @see org.bukkit.inventory.Inventory
-     * @return bukkit inventory
-     */
-    Inventory getInventory();
 }

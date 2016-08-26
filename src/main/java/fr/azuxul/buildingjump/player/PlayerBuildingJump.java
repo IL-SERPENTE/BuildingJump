@@ -2,10 +2,12 @@ package fr.azuxul.buildingjump.player;
 
 import fr.azuxul.buildingjump.BuildingJumpGame;
 import fr.azuxul.buildingjump.BuildingJumpPlugin;
+import fr.azuxul.buildingjump.GUIItems;
 import fr.azuxul.buildingjump.jump.Jump;
 import fr.azuxul.buildingjump.jump.JumpLoader;
 import net.samagames.api.games.GamePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import java.io.File;
 import java.util.HashSet;
@@ -50,6 +52,13 @@ public class PlayerBuildingJump extends GamePlayer {
             jump = new Jump("Jump", getUUID(), 50, new HashSet<>());
         }
 
+        Inventory inventory = getPlayerIfOnline().getInventory();
+
+        inventory.clear();
+        inventory.setItem(0, GUIItems.BUILD_MENU.getItemStack());
+
+        getPlayerIfOnline().setAllowFlight(true);
+        getPlayerIfOnline().setFlying(true);
         getPlayerIfOnline().teleport(buildingJumpGame.getJumpManager().registerJump(jump, this));
     }
 
@@ -58,6 +67,11 @@ public class PlayerBuildingJump extends GamePlayer {
 
         if (!buildingJumpGame.getPlayerInHub().contains(this))
             buildingJumpGame.getPlayerInHub().add(this);
+
+        Inventory inventory = getPlayerIfOnline().getInventory();
+
+        inventory.clear();
+        inventory.setItem(0, GUIItems.HUB_MENU.getItemStack());
 
         getPlayerIfOnline().teleport(buildingJumpGame.getConfiguration().getHubLocation());
     }

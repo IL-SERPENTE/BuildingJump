@@ -37,7 +37,7 @@ public class JumpManager {
 
     public void unregisterJump(Jump jump) {
 
-        jump.saveBlocks();
+
     }
 
     public Jump getPlayerLoadedJump(PlayerBuildingJump playerBuildingJump) {
