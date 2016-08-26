@@ -4,24 +4,6 @@ import org.bukkit.Material;
 
 import java.util.Objects;
 
-enum BlockType {
-
-    NORMAL(0),
-    CHECKPONT(1),
-    START(2),
-    END(3),;
-
-    private final int id;
-
-    BlockType(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-}
-
 /**
  * Jump block
  *

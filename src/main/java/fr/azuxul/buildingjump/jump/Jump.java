@@ -65,7 +65,7 @@ public class Jump {
     }
 
     public void registerWorldLoc(Location location) {
-        this.worldLoc = location;
+        this.worldLoc = location.clone();
     }
 
     public void load() {
@@ -97,7 +97,10 @@ public class Jump {
         loaded = true;
     }
 
-    public void update(Location worldLoc) {
+    public void update(Block updatedBlock, BlockType blockType) {
 
+        System.out.println("ok");
+
+        blocks.put(new JumpLocation(updatedBlock.getX() - worldLoc.getBlockX(), updatedBlock.getY() - worldLoc.getBlockY(), updatedBlock.getZ() - worldLoc.getBlockZ()), new JumpBlock(updatedBlock.getType(), updatedBlock.getData(), blockType));
     }
 }

@@ -3,12 +3,14 @@ package fr.azuxul.buildingjump.event;
 import fr.azuxul.buildingjump.BuildingJumpGame;
 import fr.azuxul.buildingjump.GUIItems;
 import fr.azuxul.buildingjump.invetory.InventoryGUI;
+import fr.azuxul.buildingjump.jump.BlockType;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 import fr.azuxul.buildingjump.player.PlayerState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -50,6 +52,7 @@ public class PlayerEvent implements Listener {
                     try {
                         InventoryGUI inventoryGUI = (InventoryGUI) guiItems.getInventoryClass().getConstructors()[0].newInstance(buildingJumpGame, event.getPlayer());
                         inventoryGUI.display();
+                        event.setCancelled(true);
 
                     } catch (InstantiationException e) {
                         e.printStackTrace();
@@ -99,6 +102,8 @@ public class PlayerEvent implements Listener {
                     bukkitPlayer.sendMessage(event.getPlayer().getDisplayName() + ": " + event.getMessage());
             }
         }
+
+        event.setCancelled(true);
     }
 
     @EventHandler
@@ -106,12 +111,23 @@ public class PlayerEvent implements Listener {
 
         PlayerBuildingJump playerBuildingJump = buildingJumpGame.getPlayer(event.getPlayer());
 
-        event.setCancelled(!PlayerState.BUILD.equals(playerBuildingJump.getState()));
+        if (playerBuildingJump.getState().equals(PlayerState.BUILD)) {
+            buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump).update(event.getBlock(), BlockType.NORMAL);
+        } else {
+            event.setCancelled(true);
+        }
+    }
 
-        for (GUIItems item : GUIItems.values()) {
-            if (event.getItemInHand().isSimilar(item.getItemStack())) {
-                event.setCancelled(true);
-            }
+    @EventHandler
+    public void onPlayerBreakBlock(BlockBreakEvent event) {
+
+        PlayerBuildingJump playerBuildingJump = buildingJumpGame.getPlayer(event.getPlayer());
+        if (playerBuildingJump.getState().equals(PlayerState.BUILD)) {
+            buildingJumpGame.getServer().getScheduler().runTaskLater(buildingJumpGame.getPlugin(), () -> {
+                buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump).update(event.getBlock(), BlockType.NORMAL);
+            }, 1L);
+        } else {
+            event.setCancelled(true);
         }
     }
 }

@@ -32,7 +32,7 @@ public class JumpManager {
         jumps.put(playerBuildingJump, jump);
         jump.load();
 
-        return jumpLoc;
+        return jumpLoc.clone();
     }
 
     public void unregisterJump(Jump jump) {

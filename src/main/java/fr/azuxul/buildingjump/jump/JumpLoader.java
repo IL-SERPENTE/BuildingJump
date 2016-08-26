@@ -74,20 +74,22 @@ public class JumpLoader {
         });
 
         blocks.entrySet().forEach(e -> {
-            JsonObject object = new JsonObject();
+            if (!e.getKey().getMaterial().equals(Material.AIR)) {
+                JsonObject object = new JsonObject();
 
-            object.add("id", new JsonPrimitive(e.getKey().getMaterial().getId()));
-            object.add("value", new JsonPrimitive(e.getKey().getDataValue()));
-            object.add("type", new JsonPrimitive(e.getKey().getBlockType().getId()));
+                object.add("id", new JsonPrimitive(e.getKey().getMaterial().getId()));
+                object.add("value", new JsonPrimitive(e.getKey().getDataValue()));
+                object.add("type", new JsonPrimitive(e.getKey().getBlockType().getId()));
 
-            JsonArray locArray = new JsonArray();
+                JsonArray locArray = new JsonArray();
 
-            for (JumpLocation jumpLocation : e.getValue())
-                locArray.add(new JsonPrimitive(jumpLocationToStringLocation(jumpLocation)));
+                for (JumpLocation jumpLocation : e.getValue())
+                    locArray.add(new JsonPrimitive(jumpLocationToStringLocation(jumpLocation)));
 
-            object.add("locations", locArray);
+                object.add("locations", locArray);
 
-            array.add(object);
+                array.add(object);
+            }
         });
 
         json.add("blocks", array);

@@ -57,6 +57,10 @@ public class BuildingJumpGame extends Game<PlayerBuildingJump> {
         return server;
     }
 
+    public Plugin getPlugin() {
+        return plugin;
+    }
+
     public Configuration getConfiguration() {
         return configuration;
     }
