@@ -1,8 +1,6 @@
 package fr.azuxul.buildingjump;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.LocationUtils;
 import org.bukkit.Location;
 
@@ -32,7 +30,7 @@ public class Configuration {
     }
 
     public Location getHubLocation() {
-        return hubLocation;
+        return hubLocation.clone();
     }
 
     public int getJumpMaxSize() {

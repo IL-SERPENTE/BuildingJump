@@ -47,8 +47,6 @@ public class PlayerBuildingJump extends GamePlayer {
 
         if (jump == null) {
 
-            System.out.println("ok");
-
             jump = new Jump("Jump", getUUID(), 50, new HashSet<>());
         }
 
@@ -73,6 +71,10 @@ public class PlayerBuildingJump extends GamePlayer {
         inventory.clear();
         inventory.setItem(0, GUIItems.HUB_MENU.getItemStack());
 
+        getPlayerIfOnline().closeInventory();
         getPlayerIfOnline().teleport(buildingJumpGame.getConfiguration().getHubLocation());
+
+        System.out.println(buildingJumpGame.getConfiguration().getHubLocation());
+
     }
 }
