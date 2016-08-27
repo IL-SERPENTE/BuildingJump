@@ -1,4 +1,4 @@
-package fr.azuxul.buildingjump.jump;
+package fr.azuxul.buildingjump.jump.block;
 
 import org.bukkit.Material;
 

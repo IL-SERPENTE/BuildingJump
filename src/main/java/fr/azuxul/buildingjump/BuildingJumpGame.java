@@ -1,6 +1,7 @@
 package fr.azuxul.buildingjump;
 
 import fr.azuxul.buildingjump.jump.JumpManager;
+import fr.azuxul.buildingjump.loader.LoaderPlayer;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.Game;
@@ -24,6 +25,7 @@ public class BuildingJumpGame extends Game<PlayerBuildingJump> {
     private final Server server;
     private final Configuration configuration;
     private final JumpManager jumpManager;
+    private final LoaderPlayer loaderPlayer;
     private final Set<PlayerBuildingJump> playerInHub;
     private final Set<PlayerBuildingJump> playerInBuildAndTest;
 
@@ -35,10 +37,15 @@ public class BuildingJumpGame extends Game<PlayerBuildingJump> {
         this.server = javaPlugin.getServer();
         this.configuration = new Configuration(SamaGamesAPI.get().getGameManager().getGameProperties().getConfigs());
         this.jumpManager = new JumpManager(this);
+        this.loaderPlayer = new LoaderPlayer(this);
 
         this.playerInHub = new HashSet<>();
         this.playerInBuildAndTest = new HashSet<>();
 
+    }
+
+    public LoaderPlayer getLoaderPlayer() {
+        return loaderPlayer;
     }
 
     public JumpManager getJumpManager() {

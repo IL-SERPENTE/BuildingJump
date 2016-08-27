@@ -1,9 +1,12 @@
 package fr.azuxul.buildingjump.jump;
 
 import fr.azuxul.buildingjump.BuildingJumpGame;
+import fr.azuxul.buildingjump.jump.block.BlockType;
+import fr.azuxul.buildingjump.jump.block.JumpBlock;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -16,22 +19,20 @@ import java.util.UUID;
  */
 public class Jump {
 
-    private final UUID owner;
+    private final JumpMeta jumpMeta;
     private final Map<JumpLocation, JumpBlock> blocks;
     private final Map<JumpLocation, JumpBlock> effectBlocks;
     private final int size;
     private final boolean firstInit;
     private final BuildingJumpGame buildingJumpGame;
 
-    private String name;
     private Location worldLoc;
     private Location spawn;
     private boolean loaded;
 
-    public Jump(String name, UUID owner, int size, Map<JumpLocation, JumpBlock> blocks, BuildingJumpGame buildingJumpGame, boolean newJump, Location spawn) {
+    public Jump(JumpMeta jumpMeta, int size, Map<JumpLocation, JumpBlock> blocks, BuildingJumpGame buildingJumpGame, boolean newJump, Location spawn) {
 
-        this.name = name;
-        this.owner = owner;
+        this.jumpMeta = jumpMeta;
         this.size = size;
         this.blocks = blocks;
         this.buildingJumpGame = buildingJumpGame;
@@ -41,13 +42,13 @@ public class Jump {
         this.firstInit = newJump;
     }
 
-    public Jump(String name, UUID owner, int size, Map<JumpLocation, JumpBlock> blocks, BuildingJumpGame buildingJumpGame) {
+    public Jump(UUID uuid, int size, Map<JumpLocation, JumpBlock> blocks, BuildingJumpGame buildingJumpGame) {
 
-        this(name, owner, size, blocks, buildingJumpGame, false, new Location(null, 0, 3, 0, 0, 0));
+        this(new JumpMeta("", uuid, new Date().getTime(), "Nouveau jump", -1, -1), size, blocks, buildingJumpGame, true, new Location(null, 0, 3, 0, 0, 0));
     }
 
-    public UUID getOwner() {
-        return owner;
+    public JumpMeta getJumpMeta() {
+        return jumpMeta;
     }
 
     public Map<JumpLocation, JumpBlock> getBlocks() {
@@ -56,14 +57,6 @@ public class Jump {
 
     public int getSize() {
         return size;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void registerWorldLoc(Location location) {
@@ -108,7 +101,16 @@ public class Jump {
         if (Math.abs(x) >= size || Math.abs(z) >= size) {
             return false;
         } else {
-            blocks.put(new JumpLocation(x, y, z), new JumpBlock(updatedBlock.getType(), updatedBlock.getData(), blockType));
+            JumpLocation jumpLocation = new JumpLocation(x, y, z);
+            JumpBlock jumpBlock = new JumpBlock(updatedBlock.getType(), updatedBlock.getData(), blockType);
+
+            blocks.put(jumpLocation, jumpBlock);
+
+            if (blockType != BlockType.NORMAL) {
+                effectBlocks.put(jumpLocation, jumpBlock);
+            } else {
+                effectBlocks.remove(jumpLocation);
+            }
             return true;
         }
     }
@@ -132,5 +134,14 @@ public class Jump {
         this.spawn = spawn.clone().subtract(worldLoc);
         this.spawn.setYaw(spawn.getYaw());
         this.spawn.setPitch(spawn.getPitch());
+    }
+
+    public Map<JumpLocation, JumpBlock> getEffectBlocks() {
+        return effectBlocks;
+    }
+
+    public Location getWorldLocOfJumpLoc(JumpLocation jumpLocation) {
+
+        return worldLoc.clone().add(jumpLocation.getX(), jumpLocation.getY(), jumpLocation.getZ());
     }
 }

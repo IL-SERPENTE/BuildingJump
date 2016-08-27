@@ -3,6 +3,8 @@ package fr.azuxul.buildingjump.jump;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import fr.azuxul.buildingjump.BuildingJumpGame;
+import fr.azuxul.buildingjump.jump.block.BlockType;
+import fr.azuxul.buildingjump.jump.block.JumpBlock;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -47,15 +49,22 @@ public class JumpLoader {
 
         }
 
-        return new Jump(json.get("name").getAsString(), UUID.fromString(json.get("owner-uuid").getAsString()), json.get("size").getAsInt(), blocks, buildingJumpGame, false, stringLocationToSpawnLocation((json.get("spawn").getAsString())));
+        JumpMeta jumpMeta = new JumpMeta("", UUID.fromString(json.get("owner-uuid").getAsString()), 0, json.get("name").getAsString(), -1, -1);
+
+        return new Jump(jumpMeta, json.get("size").getAsInt(), blocks, buildingJumpGame, false, stringLocationToSpawnLocation((json.get("spawn").getAsString())));
     }
 
     public static void saveJump(Jump jump) {
 
         JsonObject json = new JsonObject();
 
-        json.add("name", new JsonPrimitive(jump.getName()));
-        json.add("owner-uuid", new JsonPrimitive(jump.getOwner().toString()));
+        JumpMeta jumpMeta = jump.getJumpMeta();
+
+        json.add("name", new JsonPrimitive(jumpMeta.getName()));
+        json.add("owner-uuid", new JsonPrimitive(jumpMeta.getOwner().toString()));
+        json.add("create-time", new JsonPrimitive(jumpMeta.getCreateDate()));
+        json.add("owner-difficulty", new JsonPrimitive(jumpMeta.getOwnerDifficulty()));
+        json.add("test-time", new JsonPrimitive(jumpMeta.getTestTime()));
         json.add("size", new JsonPrimitive(jump.getSize()));
         json.add("spawn", new JsonPrimitive(spawnLocationToStringLocation(jump.getSpawnInJump())));
 
@@ -96,7 +105,7 @@ public class JumpLoader {
 
         json.add("blocks", array);
 
-        File f = new File("jumps/" + jump.getOwner().toString() + "-jump.json");
+        File f = new File("jumps/" + jumpMeta.getId() + ".json");
 
         try {
 

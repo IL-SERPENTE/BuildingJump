@@ -7,7 +7,6 @@ import fr.azuxul.buildingjump.jump.Jump;
 import fr.azuxul.buildingjump.jump.JumpLoader;
 import net.samagames.api.games.GamePlayer;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -23,12 +22,14 @@ import java.util.HashMap;
 public class PlayerBuildingJump extends GamePlayer {
 
     private final BuildingJumpGame buildingJumpGame;
+    private final PlayerData playerData;
     private PlayerState state;
 
     public PlayerBuildingJump(Player player) {
         super(player);
 
         this.buildingJumpGame = BuildingJumpPlugin.getBuildingJumpGame();
+        this.playerData = buildingJumpGame.getLoaderPlayer().getPlayerData(this);
     }
 
     public PlayerState getState() {
@@ -37,6 +38,12 @@ public class PlayerBuildingJump extends GamePlayer {
 
     public void setState(PlayerState state) {
         this.state = state;
+    }
+
+    public void leaveBuild() {
+        buildingJumpGame.getPlayerInBuildAndTest().remove(this);
+        buildingJumpGame.getJumpManager().unregisterPlayerJump(this);
+
     }
 
     public void sendToBuild() {
@@ -49,7 +56,7 @@ public class PlayerBuildingJump extends GamePlayer {
 
         if (jump == null) {
 
-            jump = new Jump("Jump", getUUID(), 50, new HashMap<>(), buildingJumpGame, true, new Location(null, 0, 3, 0, 0, 0));
+            jump = new Jump(getUUID(), 50, new HashMap<>(), buildingJumpGame);
         }
 
         state = PlayerState.BUILD;
@@ -68,7 +75,6 @@ public class PlayerBuildingJump extends GamePlayer {
     }
 
     public void sendToHub() {
-        buildingJumpGame.getPlayerInBuildAndTest().remove(this);
 
         if (!buildingJumpGame.getPlayerInHub().contains(this))
             buildingJumpGame.getPlayerInHub().add(this);

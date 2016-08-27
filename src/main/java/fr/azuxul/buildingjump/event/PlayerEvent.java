@@ -3,7 +3,7 @@ package fr.azuxul.buildingjump.event;
 import fr.azuxul.buildingjump.BuildingJumpGame;
 import fr.azuxul.buildingjump.GUIItems;
 import fr.azuxul.buildingjump.invetory.InventoryGUI;
-import fr.azuxul.buildingjump.jump.BlockType;
+import fr.azuxul.buildingjump.jump.block.BlockType;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 import fr.azuxul.buildingjump.player.PlayerState;
 import org.bukkit.Material;
