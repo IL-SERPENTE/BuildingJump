@@ -157,6 +157,10 @@ public class LoaderJump {
         }
     }
 
+    public JumpMeta loadJumpMetaFromJSON(JsonObject json) {
+        return new JumpMeta(UUID.fromString(json.get("uuid").getAsString()), UUID.fromString(json.get("owner-uuid").getAsString()), json.get("create-time").getAsLong(), json.get("name").getAsString(), json.get("owner-difficulty").getAsInt(), json.get("test-time").getAsInt());
+    }
+
     public Jump loadFormJSON(JsonObject json) {
 
         Map<JumpLocation, JumpBlock> blocks = new HashMap<>();
@@ -171,9 +175,7 @@ public class LoaderJump {
             }
         }
 
-        JumpMeta jumpMeta = new JumpMeta(UUID.fromString(json.get("uuid").getAsString()), UUID.fromString(json.get("owner-uuid").getAsString()), json.get("create-time").getAsLong(), json.get("name").getAsString(), json.get("owner-difficulty").getAsInt(), json.get("test-time").getAsInt());
-
-        return new Jump(jumpMeta, json.get("size").getAsInt(), blocks, buildingJumpGame, false, stringLocationToSpawnLocation((json.get("spawn").getAsString())));
+        return new Jump(loadJumpMetaFromJSON(json), json.get("size").getAsInt(), blocks, buildingJumpGame, false, stringLocationToSpawnLocation((json.get("spawn").getAsString())));
 
     }
 

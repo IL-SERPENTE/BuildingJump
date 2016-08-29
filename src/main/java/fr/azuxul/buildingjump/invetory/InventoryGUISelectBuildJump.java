@@ -1,6 +1,7 @@
 package fr.azuxul.buildingjump.invetory;
 
 import fr.azuxul.buildingjump.BuildingJumpGame;
+import fr.azuxul.buildingjump.jump.JumpMeta;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -8,7 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,13 +64,15 @@ public class InventoryGUISelectBuildJump extends InventoryGUI {
     private ItemStack getItemStackForJump(UUID jumpUUID) {
         ItemStack itemStack = JUMP.clone();
 
+        JumpMeta meta = buildingJumpGame.getJumpManager().loadJumpSave(jumpUUID).getJumpMeta();
         ItemMeta itemMeta = itemStack.getItemMeta();
         List<String> lore = new ArrayList<>();
-        lore.add("Dif: ");
-        lore.add("Temps en test: ");
-        lore.add("ID: ");
-        lore.add(ChatColor.GRAY + jumpUUID.toString());
+        lore.add(ChatColor.GRAY + "Dif: " + ChatColor.GOLD + meta.getOwnerDifficulty());
+        lore.add(ChatColor.GRAY + "Temps en test: " + ChatColor.GREEN + (meta.getTestTime() > 0 ? meta.getTestTime() / 60 + ":" + (meta.getTestTime() - meta.getTestTime() % 60 * 60) : "--:--"));
+        lore.add(ChatColor.GRAY + "Date de création: " + new SimpleDateFormat("dd/MM/yyyy").format(new Date(meta.getCreateDate())));
+        lore.add(ChatColor.GRAY + "ID: " + jumpUUID.toString());
         itemMeta.setLore(lore);
+        itemMeta.setDisplayName(ChatColor.GREEN + meta.getName());
         itemStack.setItemMeta(itemMeta);
 
         return itemStack;
@@ -92,7 +97,7 @@ public class InventoryGUISelectBuildJump extends InventoryGUI {
     private UUID isJumpClicked(ItemStack itemStack) {
 
         if (itemStack.getType().equals(JUMP.getType()) && itemStack.getData().getData() == JUMP.getData().getData() && probablyUUIDInLore(itemStack.getItemMeta())) {
-            return UUID.fromString(itemStack.getItemMeta().getLore().get(3).substring(1));
+            return UUID.fromString(itemStack.getItemMeta().getLore().get(3).substring(6));
         } else
             return null;
     }
