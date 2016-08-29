@@ -2,7 +2,6 @@ package fr.azuxul.buildingjump.invetory;
 
 import fr.azuxul.buildingjump.BuildingJumpGame;
 import fr.azuxul.buildingjump.jump.Jump;
-import fr.azuxul.buildingjump.jump.JumpLoader;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,6 +19,7 @@ public class InventoryGUIJumpBuilder extends InventoryGUI implements InventoryHo
 
     private static final ItemStack LEAVE = new ItemStack(Material.WOOD_DOOR);
     private static final ItemStack SPAWN = new ItemStack(Material.BED);
+
     private final BuildingJumpGame buildingJumpGame;
     private final Player player;
     private final Inventory inventory;
@@ -48,11 +48,11 @@ public class InventoryGUIJumpBuilder extends InventoryGUI implements InventoryHo
 
         PlayerBuildingJump playerBuildingJump = buildingJumpGame.getPlayer(player);
 
-        if (itemStack.equals(LEAVE)) {
+        if (itemStack.isSimilar(LEAVE)) {
 
-            JumpLoader.saveJump(jump);
+            buildingJumpGame.getJumpManager().unregisterPlayerJump(playerBuildingJump);
             playerBuildingJump.sendToHub();
-        } else if (itemStack.equals(SPAWN)) {
+        } else if (itemStack.isSimilar(SPAWN)) {
 
             player.sendMessage("set spawn");
             jump.setSpawn(player.getLocation());

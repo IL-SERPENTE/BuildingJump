@@ -44,7 +44,7 @@ public class Jump {
 
     public Jump(UUID uuid, int size, Map<JumpLocation, JumpBlock> blocks, BuildingJumpGame buildingJumpGame) {
 
-        this(new JumpMeta("", uuid, new Date().getTime(), "Nouveau jump", -1, -1), size, blocks, buildingJumpGame, true, new Location(null, 0, 3, 0, 0, 0));
+        this(new JumpMeta(buildingJumpGame.getJumpManager().getNewJumpUUID(), uuid, new Date().getTime(), "Nouveau jump", -1, -1), size, blocks, buildingJumpGame, true, new Location(null, 0, 3, 0, 0, 0));
     }
 
     public JumpMeta getJumpMeta() {

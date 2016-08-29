@@ -1,6 +1,7 @@
 package fr.azuxul.buildingjump.jump;
 
 import fr.azuxul.buildingjump.BuildingJumpGame;
+import fr.azuxul.buildingjump.loader.LoaderJump;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 import org.bukkit.Location;
 
@@ -18,6 +19,7 @@ public class JumpManager {
 
     private final BuildingJumpGame buildingJumpGame;
     private final JumpAreaGenerator jumpAreaGenerator;
+    private final LoaderJump loaderJump;
     private final Map<PlayerBuildingJump, Jump> jumps;
 
     public JumpManager(BuildingJumpGame buildingJumpGame) {
@@ -25,16 +27,16 @@ public class JumpManager {
         this.buildingJumpGame = buildingJumpGame;
         this.jumpAreaGenerator = new JumpAreaGenerator(buildingJumpGame);
         this.jumps = new HashMap<>();
+        loaderJump = new LoaderJump(buildingJumpGame);
     }
 
     public Jump loadJumpSave(UUID uuid) {
 
-        return null;
+        return loaderJump.loadFormFile(uuid);
     }
 
-    public Jump loadJumpSave(PlayerBuildingJump playerBuildingJump) {
-
-        return loadJumpSave(playerBuildingJump.getUUID());
+    public UUID getNewJumpUUID() {
+        return loaderJump.getNewUUID();
     }
 
     public Location registerJump(Jump jump, PlayerBuildingJump playerBuildingJump) {
@@ -53,6 +55,7 @@ public class JumpManager {
     }
 
     public void unregisterPlayerJump(PlayerBuildingJump playerBuildingJump) {
+        loaderJump.saveToFile(jumps.get(playerBuildingJump));
         jumps.remove(playerBuildingJump);
     }
 
@@ -65,6 +68,8 @@ public class JumpManager {
         } else {
             jumps.remove(playerBuildingJump);
         }
+
+        loaderJump.saveToFile(jump);
     }
 
     public Jump getPlayerLoadedJump(PlayerBuildingJump playerBuildingJump) {

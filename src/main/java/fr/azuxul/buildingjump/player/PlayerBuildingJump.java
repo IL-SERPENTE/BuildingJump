@@ -4,14 +4,14 @@ import fr.azuxul.buildingjump.BuildingJumpGame;
 import fr.azuxul.buildingjump.BuildingJumpPlugin;
 import fr.azuxul.buildingjump.GUIItems;
 import fr.azuxul.buildingjump.jump.Jump;
-import fr.azuxul.buildingjump.jump.JumpLoader;
 import net.samagames.api.games.GamePlayer;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Game player class of BuildingJump
@@ -22,7 +22,7 @@ import java.util.HashMap;
 public class PlayerBuildingJump extends GamePlayer {
 
     private final BuildingJumpGame buildingJumpGame;
-    private final PlayerData playerData;
+    private PlayerData playerData;
     private PlayerState state;
 
     public PlayerBuildingJump(Player player) {
@@ -30,6 +30,31 @@ public class PlayerBuildingJump extends GamePlayer {
 
         this.buildingJumpGame = BuildingJumpPlugin.getBuildingJumpGame();
         this.playerData = buildingJumpGame.getLoaderPlayer().getPlayerData(this);
+
+        if (playerData == null) {
+            playerData = new PlayerData(new ArrayList<>());
+        }
+    }
+
+    @Override
+    public void handleLogin(boolean reconnect) {
+        super.handleLogin(reconnect);
+
+        if (reconnect)
+            this.playerData = buildingJumpGame.getLoaderPlayer().getPlayerData(this);
+
+        sendToHub();
+    }
+
+    @Override
+    public void handleLogout() {
+        super.handleLogout();
+
+        buildingJumpGame.getLoaderPlayer().savePlayerData(this);
+    }
+
+    public PlayerData getPlayerGameData() {
+        return playerData;
     }
 
     public PlayerState getState() {
@@ -46,17 +71,19 @@ public class PlayerBuildingJump extends GamePlayer {
 
     }
 
-    public void sendToBuild() {
+    public void sendToBuild(UUID jumpUUID) {
         buildingJumpGame.getPlayerInHub().remove(this);
 
         if(!buildingJumpGame.getPlayerInBuildAndTest().contains(this))
             buildingJumpGame.getPlayerInBuildAndTest().add(this);
 
-        Jump jump = JumpLoader.loadJumpFromFile(new File("jumps/" + getUUID().toString() + "-jump.json"), buildingJumpGame);
+        Jump jump;
 
-        if (jump == null) {
-
+        if (jumpUUID == null) {
             jump = new Jump(getUUID(), 50, new HashMap<>(), buildingJumpGame);
+            playerData.getJumpsUUID().add(jump.getJumpMeta().getUuid());
+        } else {
+            jump = buildingJumpGame.getJumpManager().loadJumpSave(jumpUUID);
         }
 
         state = PlayerState.BUILD;

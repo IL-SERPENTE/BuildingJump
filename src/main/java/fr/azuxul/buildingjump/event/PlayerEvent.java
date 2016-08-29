@@ -17,7 +17,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.InventoryHolder;
 
 import java.lang.reflect.InvocationTargetException;
@@ -34,15 +33,6 @@ public class PlayerEvent implements Listener {
 
     public PlayerEvent(BuildingJumpGame buildingJumpGame) {
         this.buildingJumpGame = buildingJumpGame;
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-
-        Player player = event.getPlayer();
-        PlayerBuildingJump playerBuildingJump = buildingJumpGame.getPlayer(player.getUniqueId());
-
-        playerBuildingJump.sendToHub();
     }
 
     @EventHandler

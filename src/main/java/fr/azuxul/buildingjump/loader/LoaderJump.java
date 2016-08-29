@@ -1,8 +1,6 @@
 package fr.azuxul.buildingjump.loader;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import fr.azuxul.buildingjump.BuildingJumpGame;
 import fr.azuxul.buildingjump.jump.Jump;
 import fr.azuxul.buildingjump.jump.JumpLocation;
@@ -14,24 +12,29 @@ import org.bukkit.Material;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
- * Created by Azuxul on 27/08/2016.
+ * Jump loader and saver
+ *
+ * @author Azuxul
+ * @version 1.0
  */
 public class LoaderJump {
+
+    private static final String BASE_DIRECTORY = "buildingjump/jumps/";
 
     private final BuildingJumpGame buildingJumpGame;
 
     public LoaderJump(BuildingJumpGame buildingJumpGame) {
         this.buildingJumpGame = buildingJumpGame;
+        initDirectory();
     }
 
-    private static File getFileForID(String id) {
-        return new File("jumps/" + id + ".json");
+    private static File getFileForID(UUID uuid) {
+        return new File(BASE_DIRECTORY + uuid.toString() + ".json");
     }
 
     private static String jumpLocationToStringLocation(JumpLocation jumpLocation) {
@@ -78,12 +81,36 @@ public class LoaderJump {
         return new Location(null, Double.parseDouble(loc[0]), Double.parseDouble(loc[1]), Double.parseDouble(loc[2]), Float.parseFloat(loc[3]), Float.parseFloat(loc[4]));
     }
 
+    private void initDirectory() {
+        File baseDir = new File(BASE_DIRECTORY);
+
+        if (!baseDir.exists())
+            baseDir.mkdirs();
+    }
+
+    public UUID getNewUUID() {
+
+        UUID uuid;
+
+        do {
+            uuid = UUID.randomUUID();
+
+        } while (jumpExists(uuid));
+
+        return uuid;
+    }
+
+    public boolean jumpExists(UUID uuid) {
+
+        return new File(BASE_DIRECTORY + uuid.toString() + ".json").exists();
+    }
+
     public Jump loadFormFile(UUID uuid) {
 
         FileReader fileReader = null;
 
         try {
-            fileReader = new FileReader(getFileForID(""));
+            fileReader = new FileReader(getFileForID(uuid));
 
             JsonElement element = new JsonParser().parse(fileReader);
 
@@ -106,6 +133,28 @@ public class LoaderJump {
 
     public void saveToFile(Jump jump) {
 
+        FileWriter fileWriter = null;
+
+        try {
+            File jumpFile = getFileForID(jump.getJumpMeta().getUuid());
+
+            if (!jumpFile.exists())
+                jumpFile.createNewFile();
+
+            fileWriter = new FileWriter(jumpFile);
+            fileWriter.write(saveToJSON(jump).toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fileWriter != null) {
+                try {
+                    fileWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public Jump loadFormJSON(JsonObject json) {
@@ -122,7 +171,7 @@ public class LoaderJump {
             }
         }
 
-        JumpMeta jumpMeta = new JumpMeta("", UUID.fromString(json.get("owner-uuid").getAsString()), 0, json.get("name").getAsString(), -1, -1);
+        JumpMeta jumpMeta = new JumpMeta(UUID.fromString(json.get("uuid").getAsString()), UUID.fromString(json.get("owner-uuid").getAsString()), json.get("create-time").getAsLong(), json.get("name").getAsString(), json.get("owner-difficulty").getAsInt(), json.get("test-time").getAsInt());
 
         return new Jump(jumpMeta, json.get("size").getAsInt(), blocks, buildingJumpGame, false, stringLocationToSpawnLocation((json.get("spawn").getAsString())));
 
@@ -130,6 +179,58 @@ public class LoaderJump {
 
     public JsonObject saveToJSON(Jump jump) {
 
-        return null;
+        JsonObject jsonJump = new JsonObject();
+
+        JumpMeta jumpMeta = jump.getJumpMeta();
+
+        jsonJump.add("uuid", new JsonPrimitive(jumpMeta.getUuid().toString()));
+        jsonJump.add("name", new JsonPrimitive(jumpMeta.getName()));
+        jsonJump.add("owner-uuid", new JsonPrimitive(jumpMeta.getOwner().toString()));
+        jsonJump.add("create-time", new JsonPrimitive(jumpMeta.getCreateDate()));
+        jsonJump.add("owner-difficulty", new JsonPrimitive(jumpMeta.getOwnerDifficulty()));
+        jsonJump.add("test-time", new JsonPrimitive(jumpMeta.getTestTime()));
+        jsonJump.add("size", new JsonPrimitive(jump.getSize()));
+        jsonJump.add("spawn", new JsonPrimitive(spawnLocationToStringLocation(jump.getSpawnInJump())));
+        jsonJump.add("blocks", getJSONBlocksArray(jump));
+
+        return jsonJump;
+    }
+
+    private JsonArray getJSONBlocksArray(Jump jump) {
+
+        JsonArray blockArray = new JsonArray();
+        Map<JumpBlock, List<JumpLocation>> blockTypeMap = new HashMap<>();
+
+        jump.getBlocks().entrySet().forEach(e -> {
+
+            if (blockTypeMap.containsKey(e.getValue())) {
+                blockTypeMap.get(e.getValue()).add(e.getKey());
+            } else {
+                List<JumpLocation> jumpLocationList = new ArrayList<>();
+
+                jumpLocationList.add(e.getKey());
+                blockTypeMap.put(e.getValue(), jumpLocationList);
+            }
+        });
+
+        blockTypeMap.entrySet().forEach(e -> {
+            if (!e.getKey().getMaterial().equals(Material.AIR)) {
+                JsonObject object = new JsonObject();
+                JsonArray locArray = new JsonArray();
+
+                object.add("id", new JsonPrimitive(e.getKey().getMaterial().getId()));
+                object.add("value", new JsonPrimitive(e.getKey().getDataValue()));
+                object.add("type", new JsonPrimitive(e.getKey().getBlockType().getId()));
+
+                for (JumpLocation jumpLocation : e.getValue())
+                    locArray.add(new JsonPrimitive(jumpLocationToStringLocation(jumpLocation)));
+
+                object.add("locations", locArray);
+
+                blockArray.add(object);
+            }
+        });
+
+        return blockArray;
     }
 }

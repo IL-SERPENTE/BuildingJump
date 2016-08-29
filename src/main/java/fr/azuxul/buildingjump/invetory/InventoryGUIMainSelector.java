@@ -38,7 +38,7 @@ public class InventoryGUIMainSelector extends InventoryGUI {
         PlayerBuildingJump playerBuildingJump = buildingJumpGame.getPlayer(player);
 
         if(Material.BRICK.equals(itemStack.getType())) {
-            playerBuildingJump.sendToBuild();
+            new InventoryGUISelectBuildJump(buildingJumpGame, player).display();
         }
 
         return true;

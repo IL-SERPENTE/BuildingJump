@@ -10,7 +10,7 @@ import java.util.UUID;
  */
 public class JumpMeta {
 
-    private final String id;
+    private final UUID uuid;
     private final UUID owner;
     private final long createDate;
 
@@ -18,8 +18,8 @@ public class JumpMeta {
     private int ownerDifficulty;
     private int testTime;
 
-    public JumpMeta(String id, UUID owner, long createDate, String name, int ownerDifficulty, int testTime) {
-        this.id = id;
+    public JumpMeta(UUID uuid, UUID owner, long createDate, String name, int ownerDifficulty, int testTime) {
+        this.uuid = uuid;
         this.owner = owner;
         this.createDate = createDate;
         this.name = name;
@@ -27,8 +27,8 @@ public class JumpMeta {
         this.testTime = testTime;
     }
 
-    public String getId() {
-        return id;
+    public UUID getUuid() {
+        return uuid;
     }
 
     public UUID getOwner() {

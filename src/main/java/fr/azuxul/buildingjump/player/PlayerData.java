@@ -1,6 +1,7 @@
 package fr.azuxul.buildingjump.player;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Saved player data
@@ -10,10 +11,14 @@ import java.util.List;
  */
 public class PlayerData {
 
-    private final List<String> jumpsId;
+    private final List<UUID> jumpsUUID;
 
-    public PlayerData(List<String> jumpsId) {
+    public PlayerData(List<UUID> jumpsUUID) {
 
-        this.jumpsId = jumpsId;
+        this.jumpsUUID = jumpsUUID;
+    }
+
+    public List<UUID> getJumpsUUID() {
+        return jumpsUUID;
     }
 }

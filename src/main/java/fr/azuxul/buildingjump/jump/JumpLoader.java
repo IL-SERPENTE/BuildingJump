@@ -16,6 +16,7 @@ import java.util.*;
  *
  * @author Azuxul
  * @version 1.0
+ * @deprecated
  */
 public class JumpLoader {
 
@@ -49,7 +50,7 @@ public class JumpLoader {
 
         }
 
-        JumpMeta jumpMeta = new JumpMeta("", UUID.fromString(json.get("owner-uuid").getAsString()), 0, json.get("name").getAsString(), -1, -1);
+        JumpMeta jumpMeta = new JumpMeta(UUID.fromString(json.get("uuid").getAsString()), UUID.fromString(json.get("owner-uuid").getAsString()), 0, json.get("name").getAsString(), -1, -1);
 
         return new Jump(jumpMeta, json.get("size").getAsInt(), blocks, buildingJumpGame, false, stringLocationToSpawnLocation((json.get("spawn").getAsString())));
     }
@@ -105,7 +106,7 @@ public class JumpLoader {
 
         json.add("blocks", array);
 
-        File f = new File("jumps/" + jumpMeta.getId() + ".json");
+        File f = new File("jumps/" + jumpMeta.getUuid() + ".json");
 
         try {
 
