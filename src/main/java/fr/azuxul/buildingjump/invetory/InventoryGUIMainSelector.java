@@ -15,14 +15,11 @@ import org.bukkit.inventory.ItemStack;
 public class InventoryGUIMainSelector extends InventoryGUI {
 
     private final BuildingJumpGame buildingJumpGame;
-    private final Player player;
 
     public InventoryGUIMainSelector(BuildingJumpGame buildingJumpGame, Player player) {
 
-
         super(buildingJumpGame, player, 27, "");
         this.buildingJumpGame = buildingJumpGame;
-        this.player = player;
 
         initInventory();
     }

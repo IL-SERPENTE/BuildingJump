@@ -175,7 +175,7 @@ public class LoaderJump {
             }
         }
 
-        return new Jump(loadJumpMetaFromJSON(json), json.get("size").getAsInt(), blocks, buildingJumpGame, false, stringLocationToSpawnLocation((json.get("spawn").getAsString())));
+        return new Jump(loadJumpMetaFromJSON(json), json.get("size").getAsInt(), blocks, buildingJumpGame, false, stringLocationToSpawnLocation(json.get("spawn").getAsString()));
 
     }
 

@@ -21,7 +21,9 @@ public class BuildingJumpClock implements Runnable {
     public void run() {
 
         buildingJumpGame.getJumpManager().getJumps().entrySet().forEach(j -> {
-            j.getValue().getEffectBlocks();
+            j.getValue().getEffectBlocks().values().forEach(jumpBlock -> {
+                jumpBlock.getBlockEffect().displayParticles();
+            });
         });
     }
 }

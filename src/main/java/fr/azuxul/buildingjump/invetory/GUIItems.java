@@ -1,8 +1,5 @@
-package fr.azuxul.buildingjump;
+package fr.azuxul.buildingjump.invetory;
 
-import fr.azuxul.buildingjump.invetory.InventoryGUI;
-import fr.azuxul.buildingjump.invetory.InventoryGUIJumpBuilder;
-import fr.azuxul.buildingjump.invetory.InventoryGUIMainSelector;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

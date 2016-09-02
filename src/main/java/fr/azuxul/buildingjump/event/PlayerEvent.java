@@ -1,7 +1,7 @@
 package fr.azuxul.buildingjump.event;
 
 import fr.azuxul.buildingjump.BuildingJumpGame;
-import fr.azuxul.buildingjump.GUIItems;
+import fr.azuxul.buildingjump.invetory.GUIItems;
 import fr.azuxul.buildingjump.invetory.InventoryGUI;
 import fr.azuxul.buildingjump.jump.block.BlockType;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
@@ -113,13 +113,16 @@ public class PlayerEvent implements Listener {
         event.setCancelled(true);
     }
 
+    // TODO: Blocks with 2 blocks
     @EventHandler
     public void onPlayerPlaceBlock(BlockPlaceEvent event) {
 
         PlayerBuildingJump playerBuildingJump = buildingJumpGame.getPlayer(event.getPlayer());
 
         if (playerBuildingJump.getState().equals(PlayerState.BUILD)) {
-            if (!buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump).update(event.getBlock(), BlockType.NORMAL)) {
+            BlockType blockType = BlockType.isSpecialBlock(event.getItemInHand());
+
+            if (!buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump).update(event.getBlock(), blockType)) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage("e");
             }

@@ -84,7 +84,8 @@ public class Jump {
             for (int x = -2; x < 2; x++) {
                 for (int z = -2; z < 2; z++) {
                     worldLoc.clone().add(x, 0, z).getBlock().setType(buildingJumpGame.getConfiguration().getDefaultPlatformMaterial());
-                    blocks.put(new JumpLocation(x, 0, z), new JumpBlock(buildingJumpGame.getConfiguration().getDefaultPlatformMaterial(), (byte) 0, BlockType.NORMAL));
+                    JumpLocation jumpLocation = new JumpLocation(x, 0, z);
+                    blocks.put(jumpLocation, new JumpBlock(buildingJumpGame.getConfiguration().getDefaultPlatformMaterial(), (byte) 0, BlockType.NORMAL, this, jumpLocation));
                 }
             }
         }
@@ -102,7 +103,7 @@ public class Jump {
             return false;
         } else {
             JumpLocation jumpLocation = new JumpLocation(x, y, z);
-            JumpBlock jumpBlock = new JumpBlock(updatedBlock.getType(), updatedBlock.getData(), blockType);
+            JumpBlock jumpBlock = new JumpBlock(updatedBlock.getType(), updatedBlock.getData(), blockType, this, jumpLocation);
 
             blocks.put(jumpLocation, jumpBlock);
 

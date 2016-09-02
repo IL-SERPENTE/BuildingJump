@@ -7,11 +7,14 @@ import org.bukkit.inventory.InventoryHolder;
 
 /**
  * Abstract class InventoryGUI class
+ *
+ * @author Azuxul
+ * @version 1.0
  */
 public abstract class InventoryGUI implements IInventoryGUI, InventoryHolder {
 
-    private final Player player;
-    private final Inventory inventory;
+    protected final Player player;
+    protected final Inventory inventory;
 
     InventoryGUI(BuildingJumpGame buildingJumpGame, Player player, int size, String name) {
 
@@ -30,6 +33,7 @@ public abstract class InventoryGUI implements IInventoryGUI, InventoryHolder {
      * @see org.bukkit.inventory.Inventory
      * @return bukkit inventory
      */
+    @Override
     public Inventory getInventory() {
         return inventory;
     }

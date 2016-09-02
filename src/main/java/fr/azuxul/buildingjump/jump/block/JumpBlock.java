@@ -1,7 +1,11 @@
 package fr.azuxul.buildingjump.jump.block;
 
+import fr.azuxul.buildingjump.jump.Jump;
+import fr.azuxul.buildingjump.jump.JumpLocation;
+import fr.azuxul.buildingjump.jump.block.effect.BlockEffect;
 import org.bukkit.Material;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 /**
@@ -12,15 +16,45 @@ import java.util.Objects;
  */
 public class JumpBlock {
 
-    private Material material;
-    private byte dataValue;
-    private BlockType blockType;
+    private final Jump jump;
+    private final JumpLocation jumpLocation;
+    private final Material material;
+    private final byte dataValue;
+    private final BlockType blockType;
+    private BlockEffect blockEffect;
 
-    public JumpBlock(Material material, byte dataValue, BlockType blockType) {
+    public JumpBlock(Material material, byte dataValue, BlockType blockType, Jump jump, JumpLocation jumpLocation) {
 
+        if (!blockType.equals(BlockType.NORMAL) && blockType.getEffectClass() != null)
+            try {
+                blockEffect = (BlockEffect) blockType.getEffectClass().getConstructors()[0].newInstance(this);
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        else
+            blockEffect = null;
+
+        this.jump = jump;
+        this.jumpLocation = jumpLocation;
         this.material = material;
         this.dataValue = dataValue;
         this.blockType = blockType;
+    }
+
+    public JumpLocation getJumpLocation() {
+        return jumpLocation;
+    }
+
+    public BlockEffect getBlockEffect() {
+        return blockEffect;
+    }
+
+    public Jump getJump() {
+        return jump;
     }
 
     public Material getMaterial() {

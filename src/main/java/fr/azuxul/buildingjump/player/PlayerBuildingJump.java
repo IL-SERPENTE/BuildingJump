@@ -2,7 +2,7 @@ package fr.azuxul.buildingjump.player;
 
 import fr.azuxul.buildingjump.BuildingJumpGame;
 import fr.azuxul.buildingjump.BuildingJumpPlugin;
-import fr.azuxul.buildingjump.GUIItems;
+import fr.azuxul.buildingjump.invetory.GUIItems;
 import fr.azuxul.buildingjump.jump.Jump;
 import net.samagames.api.games.GamePlayer;
 import org.bukkit.GameMode;

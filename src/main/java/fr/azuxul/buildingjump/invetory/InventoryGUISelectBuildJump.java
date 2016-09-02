@@ -29,14 +29,12 @@ public class InventoryGUISelectBuildJump extends InventoryGUI {
     private static final ItemStack NEW_JUMP = new ItemStack(Material.ARMOR_STAND);
 
     private final BuildingJumpGame buildingJumpGame;
-    private final Player player;
     private final int page;
 
     public InventoryGUISelectBuildJump(BuildingJumpGame buildingJumpGame, Player player, int page) {
 
         super(buildingJumpGame, player, 54, "");
         this.buildingJumpGame = buildingJumpGame;
-        this.player = player;
         this.page = page;
 
         initInventory();

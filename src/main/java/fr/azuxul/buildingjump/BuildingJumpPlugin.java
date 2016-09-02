@@ -32,6 +32,7 @@ public class BuildingJumpPlugin extends JavaPlugin {
         samaGamesAPI.getGameManager().getGameProperties();
 
         getServer().getPluginManager().registerEvents(new PlayerEvent(buildingJumpGame), this);
+        getServer().getScheduler().runTaskTimer(this, buildingJumpGame.getBuildingJumpClock(), 5L, 1L);
 
         getServer().getOnlinePlayers().forEach(player -> player.kickPlayer(ChatColor.RED + "Game loading"));
     }
