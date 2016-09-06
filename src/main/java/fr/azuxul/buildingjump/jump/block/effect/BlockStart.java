@@ -22,7 +22,7 @@ public class BlockStart extends BlockEffect {
     @Override
     public void displayParticles() {
 
-        ParticleEffect.FIREWORKS_SPARK.display(0.0F, 0.0F, 0.0F, 0.0F, 1, new Location(location.getWorld(), location.getX() + Math.cos(this.i) * 0.2, location.getY() + 0.15D, location.getZ() + Math.sin(this.i) * 0.2), 32.0D);
+        ParticleEffect.FIREWORKS_SPARK.display(0.0F, 0.0F, 0.0F, 0.0F, 1, new Location(location.getWorld(), location.getX() + 0.5D + Math.cos(this.i) * 0.5D, location.getY() + 0.15D, location.getZ() + 0.5D + Math.sin(this.i) * 0.5D), 32.0D);
 
         this.i += 0.25D;
 

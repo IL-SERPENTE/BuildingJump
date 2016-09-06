@@ -3,6 +3,7 @@ package fr.azuxul.buildingjump.jump;
 import fr.azuxul.buildingjump.BuildingJumpGame;
 import fr.azuxul.buildingjump.jump.block.BlockType;
 import fr.azuxul.buildingjump.jump.block.JumpBlock;
+import fr.azuxul.buildingjump.jump.block.effect.BlockEffect;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
@@ -21,7 +22,7 @@ public class Jump {
 
     private final JumpMeta jumpMeta;
     private final Map<JumpLocation, JumpBlock> blocks;
-    private final Map<JumpLocation, JumpBlock> effectBlocks;
+    private final Map<Location, BlockEffect> effectBlocks;
     private final int size;
     private final boolean firstInit;
     private final BuildingJumpGame buildingJumpGame;
@@ -73,11 +74,13 @@ public class Jump {
         blocks.entrySet().forEach(e -> {
 
             Block block = worldLoc.clone().add(e.getKey().getX(), e.getKey().getY(), e.getKey().getZ()).getBlock();
-
+            e.getValue().getJumpLocation().setJumpCenter(worldLoc);
             block.setTypeIdAndData(e.getValue().getMaterial().getId(), e.getValue().getDataValue(), true);
 
-            if (!e.getValue().getBlockType().equals(BlockType.NORMAL))
-                effectBlocks.put(e.getKey(), e.getValue());
+            if (!e.getValue().getBlockType().equals(BlockType.NORMAL)) {
+                effectBlocks.put(e.getKey().getLocation(), e.getValue().getBlockEffect());
+                System.out.println(e.getValue().getBlockType());
+            }
         });
 
         if (firstInit) {
@@ -85,7 +88,7 @@ public class Jump {
                 for (int z = -2; z < 2; z++) {
                     worldLoc.clone().add(x, 0, z).getBlock().setType(buildingJumpGame.getConfiguration().getDefaultPlatformMaterial());
                     JumpLocation jumpLocation = new JumpLocation(x, 0, z);
-                    blocks.put(jumpLocation, new JumpBlock(buildingJumpGame.getConfiguration().getDefaultPlatformMaterial(), (byte) 0, BlockType.NORMAL, this, jumpLocation));
+                    blocks.put(jumpLocation, new JumpBlock(buildingJumpGame.getConfiguration().getDefaultPlatformMaterial(), (byte) 0, BlockType.NORMAL, jumpLocation));
                 }
             }
         }
@@ -103,15 +106,18 @@ public class Jump {
             return false;
         } else {
             JumpLocation jumpLocation = new JumpLocation(x, y, z);
-            JumpBlock jumpBlock = new JumpBlock(updatedBlock.getType(), updatedBlock.getData(), blockType, this, jumpLocation);
-
-            blocks.put(jumpLocation, jumpBlock);
+            jumpLocation.setJumpCenter(worldLoc);
+            JumpBlock jumpBlock;
 
             if (blockType != BlockType.NORMAL) {
-                effectBlocks.put(jumpLocation, jumpBlock);
+                jumpBlock = new JumpBlock(blockType.getRealMaterial(), (byte) 0, blockType, jumpLocation);
+                effectBlocks.put(jumpLocation.getLocation(), jumpBlock.getBlockEffect());
             } else {
-                effectBlocks.remove(jumpLocation);
+                jumpBlock = new JumpBlock(updatedBlock.getType(), updatedBlock.getData(), blockType, jumpLocation);
+                effectBlocks.remove(jumpLocation.getLocation());
             }
+
+            blocks.put(jumpLocation, jumpBlock);
             return true;
         }
     }
@@ -137,7 +143,7 @@ public class Jump {
         this.spawn.setPitch(spawn.getPitch());
     }
 
-    public Map<JumpLocation, JumpBlock> getEffectBlocks() {
+    public Map<Location, BlockEffect> getEffectBlocks() {
         return effectBlocks;
     }
 

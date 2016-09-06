@@ -168,10 +168,10 @@ public class LoaderJump {
         for (JsonElement element : json.get("blocks").getAsJsonArray()) {
             JsonObject object = element.getAsJsonObject();
 
-            JumpBlock jumpBlock = new JumpBlock(Material.getMaterial(object.get("id").getAsInt()), object.get("value").getAsByte(), BlockType.values()[object.get("type").getAsInt()]);
-
             for (JsonElement loc : object.get("locations").getAsJsonArray()) {
-                blocks.put(stringLocationToJumpLocation(loc.getAsString()), jumpBlock);
+                JumpLocation jumpLocation = stringLocationToJumpLocation(loc.getAsString());
+                JumpBlock jumpBlock = new JumpBlock(Material.getMaterial(object.get("id").getAsInt()), object.get("value").getAsByte(), BlockType.values()[object.get("type").getAsInt()], jumpLocation);
+                blocks.put(jumpLocation, jumpBlock);
             }
         }
 
@@ -216,7 +216,7 @@ public class LoaderJump {
         });
 
         blockTypeMap.entrySet().forEach(e -> {
-            if (!e.getKey().getMaterial().equals(Material.AIR)) {
+            if (!e.getKey().getMaterial().equals(Material.AIR) || e.getKey().getBlockType() != BlockType.NORMAL) {
                 JsonObject object = new JsonObject();
                 JsonArray locArray = new JsonArray();
 

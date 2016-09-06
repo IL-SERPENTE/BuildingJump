@@ -20,10 +20,9 @@ public class BuildingJumpClock implements Runnable {
     @Override
     public void run() {
 
-        buildingJumpGame.getJumpManager().getJumps().entrySet().forEach(j -> {
-            j.getValue().getEffectBlocks().values().forEach(jumpBlock -> {
-                jumpBlock.getBlockEffect().displayParticles();
-            });
-        });
+        buildingJumpGame.getJumpManager().getJumps().entrySet().forEach(j -> j.getValue().getEffectBlocks().values().forEach(blockEffect -> {
+            if (blockEffect != null)
+                blockEffect.displayParticles();
+        }));
     }
 }

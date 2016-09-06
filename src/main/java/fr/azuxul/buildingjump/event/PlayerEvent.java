@@ -121,6 +121,8 @@ public class PlayerEvent implements Listener {
 
         if (playerBuildingJump.getState().equals(PlayerState.BUILD)) {
             BlockType blockType = BlockType.isSpecialBlock(event.getItemInHand());
+            if (blockType != BlockType.NORMAL)
+                event.getBlock().setType(blockType.getRealMaterial());
 
             if (!buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump).update(event.getBlock(), blockType)) {
                 event.setCancelled(true);

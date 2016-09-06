@@ -1,6 +1,5 @@
 package fr.azuxul.buildingjump.jump.block;
 
-import fr.azuxul.buildingjump.jump.Jump;
 import fr.azuxul.buildingjump.jump.JumpLocation;
 import fr.azuxul.buildingjump.jump.block.effect.BlockEffect;
 import org.bukkit.Material;
@@ -16,33 +15,36 @@ import java.util.Objects;
  */
 public class JumpBlock {
 
-    private final Jump jump;
     private final JumpLocation jumpLocation;
     private final Material material;
     private final byte dataValue;
     private final BlockType blockType;
     private BlockEffect blockEffect;
 
-    public JumpBlock(Material material, byte dataValue, BlockType blockType, Jump jump, JumpLocation jumpLocation) {
+    public JumpBlock(Material material, byte dataValue, BlockType blockType, JumpLocation jumpLocation) {
 
-        if (!blockType.equals(BlockType.NORMAL) && blockType.getEffectClass() != null)
-            try {
-                blockEffect = (BlockEffect) blockType.getEffectClass().getConstructors()[0].newInstance(this);
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        else
-            blockEffect = null;
-
-        this.jump = jump;
         this.jumpLocation = jumpLocation;
         this.material = material;
         this.dataValue = dataValue;
         this.blockType = blockType;
+
+        generateBlockEffect();
+    }
+
+    private void generateBlockEffect() {
+
+        System.out.println(blockType);
+        System.out.println(blockType.getEffectClass());
+
+        if (!blockType.equals(BlockType.NORMAL) && blockType.getEffectClass() != null)
+            try {
+                blockEffect = (BlockEffect) blockType.getEffectClass().getConstructors()[0].newInstance(this);
+            } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
+                System.out.println("FAILLLLL !");
+                e.printStackTrace();
+            }
+        else
+            blockEffect = null;
     }
 
     public JumpLocation getJumpLocation() {
@@ -50,11 +52,12 @@ public class JumpBlock {
     }
 
     public BlockEffect getBlockEffect() {
-        return blockEffect;
-    }
+        if (blockEffect == null)
+            generateBlockEffect();
 
-    public Jump getJump() {
-        return jump;
+        System.out.println(blockEffect);
+
+        return blockEffect;
     }
 
     public Material getMaterial() {

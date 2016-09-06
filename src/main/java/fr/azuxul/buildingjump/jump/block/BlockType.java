@@ -15,19 +15,21 @@ import org.bukkit.inventory.ItemStack;
  */
 public enum BlockType {
 
-    NORMAL(0, null, null),
-    CHECKPOINT(1, ItemUtils.addDisplayNameAndLore(new ItemStack(Material.IRON_PLATE), "Checkpoint", ChatColor.WHITE + ""), null),
-    START(2, ItemUtils.addDisplayNameAndLore(new ItemStack(Material.IRON_PLATE), "Debut du jump", ChatColor.WHITE + ""), BlockStart.class),
-    END(3, ItemUtils.addDisplayNameAndLore(new ItemStack(Material.GOLD_PLATE), "Fin du jump", ChatColor.WHITE + ""), null);
+    NORMAL(0, null, null, null),
+    START(1, ItemUtils.addDisplayNameAndLore(new ItemStack(Material.IRON_PLATE), "Debut du jump", ChatColor.WHITE + ""), BlockStart.class, Material.AIR),
+    CHECKPOINT(2, ItemUtils.addDisplayNameAndLore(new ItemStack(Material.IRON_PLATE), "Checkpoint", ChatColor.WHITE + ""), null, Material.IRON_PLATE),
+    END(3, ItemUtils.addDisplayNameAndLore(new ItemStack(Material.GOLD_PLATE), "Fin du jump", ChatColor.WHITE + ""), null, Material.GOLD_PLATE);
 
     private final int id;
     private final ItemStack itemStack;
     private final Class<? extends BlockEffect> effectClass;
+    private final Material realMaterial;
 
-    BlockType(int id, ItemStack itemStack, Class<? extends BlockEffect> effectClass) {
+    BlockType(int id, ItemStack itemStack, Class<? extends BlockEffect> effectClass, Material realMaterial) {
         this.id = id;
         this.itemStack = itemStack;
         this.effectClass = effectClass;
+        this.realMaterial = realMaterial;
     }
 
     public static BlockType isSpecialBlock(ItemStack itemStack) {
@@ -37,6 +39,10 @@ public enum BlockType {
         }
 
         return NORMAL;
+    }
+
+    public Material getRealMaterial() {
+        return realMaterial;
     }
 
     public int getId() {

@@ -13,7 +13,7 @@ public abstract class BlockEffect implements IBlockEffect {
 
     protected final Location location;
 
-    public BlockEffect(JumpBlock jumpBlock) {
-        this.location = jumpBlock.getJump().getWorldLocOfJumpLoc(jumpBlock.getJumpLocation());
+    BlockEffect(JumpBlock jumpBlock) {
+        this.location = jumpBlock.getJumpLocation().getLocation();
     }
 }
