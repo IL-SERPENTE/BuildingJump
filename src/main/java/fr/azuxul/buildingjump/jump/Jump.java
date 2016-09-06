@@ -79,7 +79,6 @@ public class Jump {
 
             if (!e.getValue().getBlockType().equals(BlockType.NORMAL)) {
                 effectBlocks.put(e.getKey().getLocation(), e.getValue().getBlockEffect());
-                System.out.println(e.getValue().getBlockType());
             }
         });
 

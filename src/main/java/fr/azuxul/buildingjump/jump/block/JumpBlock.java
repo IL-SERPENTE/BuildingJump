@@ -33,14 +33,10 @@ public class JumpBlock {
 
     private void generateBlockEffect() {
 
-        System.out.println(blockType);
-        System.out.println(blockType.getEffectClass());
-
         if (!blockType.equals(BlockType.NORMAL) && blockType.getEffectClass() != null)
             try {
                 blockEffect = (BlockEffect) blockType.getEffectClass().getConstructors()[0].newInstance(this);
             } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
-                System.out.println("FAILLLLL !");
                 e.printStackTrace();
             }
         else
@@ -54,8 +50,6 @@ public class JumpBlock {
     public BlockEffect getBlockEffect() {
         if (blockEffect == null)
             generateBlockEffect();
-
-        System.out.println(blockEffect);
 
         return blockEffect;
     }
