@@ -27,8 +27,6 @@ public class JumpBlock {
         this.material = material;
         this.dataValue = dataValue;
         this.blockType = blockType;
-
-        generateBlockEffect();
     }
 
     private void generateBlockEffect() {

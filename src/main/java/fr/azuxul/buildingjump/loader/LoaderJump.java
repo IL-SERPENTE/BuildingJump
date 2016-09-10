@@ -158,7 +158,7 @@ public class LoaderJump {
     }
 
     public JumpMeta loadJumpMetaFromJSON(JsonObject json) {
-        return new JumpMeta(UUID.fromString(json.get("uuid").getAsString()), UUID.fromString(json.get("owner-uuid").getAsString()), json.get("create-time").getAsLong(), json.get("name").getAsString(), json.get("owner-difficulty").getAsInt(), json.get("test-time").getAsInt());
+        return new JumpMeta(UUID.fromString(json.get("uuid").getAsString()), UUID.fromString(json.get("owner-uuid").getAsString()), json.get("create-time").getAsLong(), json.get("name").getAsString(), json.get("owner-difficulty").getAsInt(), json.get("test-time").getAsLong());
     }
 
     public Jump loadFormJSON(JsonObject json) {

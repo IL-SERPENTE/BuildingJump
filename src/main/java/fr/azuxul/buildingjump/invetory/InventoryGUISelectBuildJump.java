@@ -66,7 +66,7 @@ public class InventoryGUISelectBuildJump extends InventoryGUI {
         ItemMeta itemMeta = itemStack.getItemMeta();
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.GRAY + "Dif: " + ChatColor.GOLD + meta.getOwnerDifficulty());
-        lore.add(ChatColor.GRAY + "Temps en test: " + ChatColor.GREEN + (meta.getTestTime() > 0 ? meta.getTestTime() / 60 + ":" + (meta.getTestTime() - meta.getTestTime() % 60 * 60) : "--:--"));
+        lore.add(ChatColor.GRAY + "Temps en test: " + ChatColor.GREEN + (meta.getTestTime() > 0 ? String.format("%1$02d:%2$02d", meta.getTestTime() / 1000 / 60, meta.getTestTime() / 1000 - meta.getTestTime() / 1000 % 60 * 60 + 60) : "--:--"));
         lore.add(ChatColor.GRAY + "Date de création: " + new SimpleDateFormat("dd/MM/yyyy").format(new Date(meta.getCreateDate())));
         lore.add(ChatColor.GRAY + "ID: " + jumpUUID.toString());
         itemMeta.setLore(lore);

@@ -16,9 +16,9 @@ public class JumpMeta {
 
     private String name;
     private int ownerDifficulty;
-    private int testTime;
+    private long testTime;
 
-    public JumpMeta(UUID uuid, UUID owner, long createDate, String name, int ownerDifficulty, int testTime) {
+    public JumpMeta(UUID uuid, UUID owner, long createDate, String name, int ownerDifficulty, long testTime) {
         this.uuid = uuid;
         this.owner = owner;
         this.createDate = createDate;
@@ -55,11 +55,11 @@ public class JumpMeta {
         this.ownerDifficulty = ownerDifficulty;
     }
 
-    public int getTestTime() {
+    public long getTestTime() {
         return testTime;
     }
 
-    public void setTestTime(int testTime) {
+    public void setTestTime(long testTime) {
         this.testTime = testTime;
     }
 }

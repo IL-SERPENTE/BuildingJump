@@ -6,6 +6,7 @@ import fr.azuxul.buildingjump.invetory.GUIItems;
 import fr.azuxul.buildingjump.jump.Jump;
 import net.samagames.api.games.GamePlayer;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -24,6 +25,10 @@ public class PlayerBuildingJump extends GamePlayer {
     private final BuildingJumpGame buildingJumpGame;
     private PlayerData playerData;
     private PlayerState state;
+    private long jumpStartTime;
+    private Jump currentJump;
+    private boolean jumpStart;
+    private Location checkpointLoc;
 
     public PlayerBuildingJump(Player player) {
         super(player);
@@ -53,6 +58,39 @@ public class PlayerBuildingJump extends GamePlayer {
         buildingJumpGame.getLoaderPlayer().savePlayerData(this);
     }
 
+    public Location getCheckpointLoc() {
+        return checkpointLoc;
+    }
+
+    public void setCheckpointLoc(Location checkpointLoc) {
+        this.checkpointLoc = checkpointLoc;
+    }
+
+    public void teleportToCheckpoint() {
+        getPlayerIfOnline().setFallDistance(0);
+        getPlayerIfOnline().teleport(checkpointLoc.clone().add(0, 2, 0));
+    }
+
+    public boolean hasStartJump() {
+        return jumpStart;
+    }
+
+    public void setJumpStart(boolean jumpStart) {
+        this.jumpStart = jumpStart;
+    }
+
+    public long getJumpStartTime() {
+        return jumpStartTime;
+    }
+
+    public void setJumpStartTime(long jumpStartTime) {
+        this.jumpStartTime = jumpStartTime;
+    }
+
+    public Jump getCurrentJump() {
+        return currentJump;
+    }
+
     public PlayerData getPlayerGameData() {
         return playerData;
     }
@@ -65,10 +103,18 @@ public class PlayerBuildingJump extends GamePlayer {
         this.state = state;
     }
 
+    public void testJump() {
+        state = PlayerState.TEST;
+
+        getPlayerIfOnline().teleport(currentJump.getSpawn());
+        getPlayerIfOnline().setFlying(false);
+        getPlayerIfOnline().setAllowFlight(false);
+        getPlayerIfOnline().setGameMode(GameMode.ADVENTURE);
+    }
+
     public void leaveBuild() {
         buildingJumpGame.getPlayerInBuildAndTest().remove(this);
         buildingJumpGame.getJumpManager().unregisterPlayerJump(this);
-
     }
 
     public void sendToBuild(UUID jumpUUID) {
@@ -99,6 +145,8 @@ public class PlayerBuildingJump extends GamePlayer {
         getPlayerIfOnline().setFlying(true);
         getPlayerIfOnline().teleport(jump.getSpawn());
         getPlayerIfOnline().setGameMode(GameMode.CREATIVE);
+
+        currentJump = jump;
     }
 
     public void sendToHub() {
@@ -115,5 +163,7 @@ public class PlayerBuildingJump extends GamePlayer {
 
         getPlayerIfOnline().setGameMode(GameMode.ADVENTURE);
         getPlayerIfOnline().teleport(buildingJumpGame.getConfiguration().getHubLocation());
+
+        currentJump = null;
     }
 }

@@ -1,23 +1,25 @@
 package fr.azuxul.buildingjump.jump.block.effect;
 
+import fr.azuxul.buildingjump.jump.JumpMeta;
 import fr.azuxul.buildingjump.jump.block.JumpBlock;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
+import fr.azuxul.buildingjump.player.PlayerState;
 import net.samagames.tools.ParticleEffect;
 import org.bukkit.Location;
 
 import java.util.Date;
 
 /**
- * Block start effect
+ * Block end effect
  *
  * @author Azuxul
  * @version 1.0
  */
-public class BlockStart extends BlockEffect {
+public class BlockEnd extends BlockEffect {
 
     private double i;
 
-    public BlockStart(JumpBlock jumpBlock) {
+    public BlockEnd(JumpBlock jumpBlock) {
         super(jumpBlock);
     }
 
@@ -40,17 +42,29 @@ public class BlockStart extends BlockEffect {
 
     @Override
     public void playerOn(PlayerBuildingJump playerBuildingJump) {
-        if (!playerBuildingJump.hasStartJump()) {
-            playerBuildingJump.setJumpStart(true);
-            playerBuildingJump.setJumpStartTime(new Date().getTime());
+        if (playerBuildingJump.hasStartJump()) {
+            playerBuildingJump.setJumpStart(false);
 
-            playerBuildingJump.getPlayerIfOnline().sendMessage("START");
-            playerBuildingJump.setCheckpointLoc(location);
+            long jumpTime = new Date().getTime() - playerBuildingJump.getJumpStartTime();
+
+            if (playerBuildingJump.getState().equals(PlayerState.TEST)) {
+
+                JumpMeta jumpMeta = playerBuildingJump.getCurrentJump().getJumpMeta();
+
+                if (jumpMeta.getTestTime() > jumpTime || jumpMeta.getTestTime() < 0) {
+                    playerBuildingJump.getPlayerIfOnline().sendMessage("NEW BEST TEST TIME");
+                    jumpMeta.setTestTime(jumpTime);
+                } else {
+                    playerBuildingJump.getPlayerIfOnline().sendMessage("OLD TEST TIME IS BETTER :" + jumpMeta.getTestTime() / 1000);
+                }
+
+            }
+
+            playerBuildingJump.getPlayerIfOnline().sendMessage("END");
+            playerBuildingJump.getPlayerIfOnline().sendMessage(Double.toString((double) jumpTime / 1000));
         } else if (playerBuildingJump.getJumpStartTime() + 2000 < new Date().getTime()) {
+            playerBuildingJump.getPlayerIfOnline().sendMessage("JUMP PAS START");
             playerBuildingJump.setJumpStartTime(new Date().getTime());
-
-            playerBuildingJump.getPlayerIfOnline().sendMessage("RESET TIME");
-            playerBuildingJump.setCheckpointLoc(location);
         }
     }
 

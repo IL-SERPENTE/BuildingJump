@@ -14,11 +14,9 @@ public interface IBlockEffect {
 
     void displayTitle();
 
-    void playerEnter(PlayerBuildingJump playerBuildingJump);
-
     void playerUp(PlayerBuildingJump playerBuildingJump);
 
     void playerDown(PlayerBuildingJump playerBuildingJump);
 
-    void playerLeave(PlayerBuildingJump playerBuildingJump);
+    void playerOn(PlayerBuildingJump playerBuildingJump);
 }
