@@ -37,7 +37,7 @@ public class PlayerBuildingJump extends GamePlayer {
         this.playerData = buildingJumpGame.getLoaderPlayer().getPlayerData(this);
 
         if (playerData == null) {
-            playerData = new PlayerData(new ArrayList<>());
+            playerData = new PlayerData(new ArrayList<>(), new HashMap<>());
         }
     }
 

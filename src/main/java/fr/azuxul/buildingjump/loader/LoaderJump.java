@@ -203,7 +203,7 @@ public class LoaderJump {
         JsonArray blockArray = new JsonArray();
         Map<JumpBlock, List<JumpLocation>> blockTypeMap = new HashMap<>();
 
-        jump.getBlocks().entrySet().forEach(e -> {
+        jump.getBlocksForSave().entrySet().forEach(e -> {
 
             if (blockTypeMap.containsKey(e.getValue())) {
                 blockTypeMap.get(e.getValue()).add(e.getKey());

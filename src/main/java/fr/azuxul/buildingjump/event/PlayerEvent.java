@@ -3,6 +3,7 @@ package fr.azuxul.buildingjump.event;
 import fr.azuxul.buildingjump.BuildingJumpGame;
 import fr.azuxul.buildingjump.invetory.GUIItems;
 import fr.azuxul.buildingjump.invetory.InventoryGUI;
+import fr.azuxul.buildingjump.jump.Jump;
 import fr.azuxul.buildingjump.jump.block.BlockType;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 import fr.azuxul.buildingjump.player.PlayerState;
@@ -65,10 +66,14 @@ public class PlayerEvent implements Listener {
 
                 Block block = event.getPlayer().getLocation().clone().add(0, -1, 0).getBlock();
 
+                Jump jump = buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump);
+
                 block.setTypeIdAndData(event.getItem().getType().getId(), event.getItem().getData().getData(), true);
-                if (!buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump).update(block, BlockType.NORMAL)) {
+                if (!jump.canPlace(block)) {
                     block.setTypeIdAndData(Material.AIR.getId(), (byte) 0, true);
                     event.getPlayer().sendMessage("e");
+                } else {
+                    jump.update(block, BlockType.NORMAL);
                 }
             }
         }
@@ -114,7 +119,6 @@ public class PlayerEvent implements Listener {
         event.setCancelled(true);
     }
 
-    // TODO: Blocks with 2 blocks
     @EventHandler
     public void onPlayerPlaceBlock(BlockPlaceEvent event) {
 
@@ -122,12 +126,17 @@ public class PlayerEvent implements Listener {
 
         if (playerBuildingJump.getState().equals(PlayerState.BUILD)) {
             BlockType blockType = BlockType.isSpecialBlock(event.getItemInHand());
-            if (blockType != BlockType.NORMAL)
+            if (blockType != BlockType.NORMAL) {
                 event.getBlock().setType(blockType.getRealMaterial());
+            }
 
-            if (!buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump).update(event.getBlock(), blockType)) {
+            Jump jump = buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump);
+
+            if (!jump.canPlace(event.getBlock())) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage("e");
+            } else {
+                jump.update(event.getBlock(), blockType);
             }
         } else {
             event.setCancelled(true);
@@ -140,9 +149,13 @@ public class PlayerEvent implements Listener {
         PlayerBuildingJump playerBuildingJump = buildingJumpGame.getPlayer(event.getPlayer());
         if (playerBuildingJump.getState().equals(PlayerState.BUILD)) {
             buildingJumpGame.getServer().getScheduler().runTaskLater(buildingJumpGame.getPlugin(), () -> {
-                if (!buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump).update(event.getBlock(), BlockType.NORMAL)) {
+                Jump jump = buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump);
+
+                if (!jump.canPlace(event.getBlock())) {
                     event.getPlayer().sendMessage("e");
                     event.setCancelled(true);
+                } else {
+                    jump.update(event.getBlock(), BlockType.NORMAL);
                 }
             }, 1L);
         } else {

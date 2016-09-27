@@ -1,5 +1,6 @@
 package fr.azuxul.buildingjump.jump.block.effect;
 
+import fr.azuxul.buildingjump.jump.block.BlockType;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 
 /**
@@ -19,4 +20,6 @@ public interface IBlockEffect {
     void playerDown(PlayerBuildingJump playerBuildingJump);
 
     void playerOn(PlayerBuildingJump playerBuildingJump);
+
+    BlockType getType();
 }

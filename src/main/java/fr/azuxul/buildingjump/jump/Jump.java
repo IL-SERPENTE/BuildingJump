@@ -5,6 +5,7 @@ import fr.azuxul.buildingjump.jump.block.BlockType;
 import fr.azuxul.buildingjump.jump.block.JumpBlock;
 import fr.azuxul.buildingjump.jump.block.effect.BlockEffect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 import java.util.Date;
@@ -52,10 +53,6 @@ public class Jump {
         return jumpMeta;
     }
 
-    public Map<JumpLocation, JumpBlock> getBlocks() {
-        return blocks;
-    }
-
     public int getSize() {
         return size;
     }
@@ -95,30 +92,30 @@ public class Jump {
         loaded = true;
     }
 
-    public boolean update(Block updatedBlock, BlockType blockType) {
-
+    public void update(Block updatedBlock, BlockType blockType) {
         int x = updatedBlock.getX() - worldLoc.getBlockX();
         int y = updatedBlock.getY() - worldLoc.getBlockY();
         int z = updatedBlock.getZ() - worldLoc.getBlockZ();
 
-        if (Math.abs(x) >= size || Math.abs(z) >= size) {
-            return false;
+
+        JumpLocation jumpLocation = new JumpLocation(x, y, z);
+        jumpLocation.setJumpCenter(worldLoc);
+        JumpBlock jumpBlock;
+
+        if (blockType != BlockType.NORMAL) {
+            jumpBlock = new JumpBlock(blockType.getRealMaterial(), (byte) 0, blockType, jumpLocation);
+            effectBlocks.put(jumpLocation.getLocation(), jumpBlock.getBlockEffect());
         } else {
-            JumpLocation jumpLocation = new JumpLocation(x, y, z);
-            jumpLocation.setJumpCenter(worldLoc);
-            JumpBlock jumpBlock;
-
-            if (blockType != BlockType.NORMAL) {
-                jumpBlock = new JumpBlock(blockType.getRealMaterial(), (byte) 0, blockType, jumpLocation);
-                effectBlocks.put(jumpLocation.getLocation(), jumpBlock.getBlockEffect());
-            } else {
-                jumpBlock = new JumpBlock(updatedBlock.getType(), updatedBlock.getData(), blockType, jumpLocation);
-                effectBlocks.remove(jumpLocation.getLocation());
-            }
-
-            blocks.put(jumpLocation, jumpBlock);
-            return true;
+            effectBlocks.remove(jumpLocation.getLocation());
         }
+    }
+
+    public boolean canPlace(Block updatedBlock) {
+
+        int x = updatedBlock.getX() - worldLoc.getBlockX();
+        int z = updatedBlock.getZ() - worldLoc.getBlockZ();
+
+        return !(Math.abs(x) >= size || Math.abs(z) >= size);
     }
 
     public Location getSpawnInJump() {
@@ -149,5 +146,36 @@ public class Jump {
     public Location getWorldLocOfJumpLoc(JumpLocation jumpLocation) {
 
         return worldLoc.clone().add(jumpLocation.getX(), jumpLocation.getY(), jumpLocation.getZ());
+    }
+
+    public Map<JumpLocation, JumpBlock> getBlocksForSave() {
+
+        Map<JumpLocation, JumpBlock> blocksSave = new HashMap<>();
+
+        Location baseLoc = worldLoc.clone();
+
+        for (int x = -size / 2; x <= size / 2; x++) {
+            for (int z = -size / 2; z <= size / 2; z++) {
+                for (int y = -70; y < 180; y++) {
+                    Location loc = baseLoc.clone().add(x, y, z);
+
+                    BlockEffect blockEffect = effectBlocks.get(loc);
+                    if (!loc.getBlock().getType().equals(Material.AIR) || blockEffect != null) {
+
+                        JumpLocation jumpLocation = new JumpLocation(x, y, z);
+                        JumpBlock jumpBlock;
+                        if (blockEffect != null) {
+                            jumpBlock = new JumpBlock(loc.getBlock().getType(), loc.getBlock().getData(), blockEffect.getType(), jumpLocation);
+                        } else {
+                            jumpBlock = new JumpBlock(loc.getBlock().getType(), loc.getBlock().getData(), BlockType.NORMAL, jumpLocation);
+                        }
+
+                        blocksSave.put(jumpLocation, jumpBlock);
+                    }
+                }
+            }
+        }
+
+        return blocksSave;
     }
 }

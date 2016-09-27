@@ -4,9 +4,6 @@ import fr.azuxul.buildingjump.BuildingJumpGame;
 import fr.azuxul.buildingjump.Configuration;
 import org.bukkit.Location;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Jump area generator
  *
@@ -33,7 +30,7 @@ public class JumpAreaGenerator {
         int size = configuration.getJumpMaxSize();
 
         Location area = configuration.getHubLocation();
-        area.setY(60); // TODO:
+        area.setY(70);
 
         if(generatedArenas == 0) {
 

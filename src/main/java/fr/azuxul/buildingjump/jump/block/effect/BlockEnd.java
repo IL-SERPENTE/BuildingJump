@@ -1,6 +1,7 @@
 package fr.azuxul.buildingjump.jump.block.effect;
 
 import fr.azuxul.buildingjump.jump.JumpMeta;
+import fr.azuxul.buildingjump.jump.block.BlockType;
 import fr.azuxul.buildingjump.jump.block.JumpBlock;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 import fr.azuxul.buildingjump.player.PlayerState;
@@ -20,7 +21,7 @@ public class BlockEnd extends BlockEffect {
     private double i;
 
     public BlockEnd(JumpBlock jumpBlock) {
-        super(jumpBlock);
+        super(jumpBlock, BlockType.END);
     }
 
     @Override

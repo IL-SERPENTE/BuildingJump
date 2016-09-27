@@ -1,5 +1,6 @@
 package fr.azuxul.buildingjump.jump.block.effect;
 
+import fr.azuxul.buildingjump.jump.block.BlockType;
 import fr.azuxul.buildingjump.jump.block.JumpBlock;
 import fr.azuxul.buildingjump.player.PlayerBuildingJump;
 import net.samagames.tools.ParticleEffect;
@@ -18,7 +19,7 @@ public class BlockStart extends BlockEffect {
     private double i;
 
     public BlockStart(JumpBlock jumpBlock) {
-        super(jumpBlock);
+        super(jumpBlock, BlockType.START);
     }
 
     @Override
