@@ -39,11 +39,15 @@ public class BuildingJumpClock implements Runnable {
                 } else {
                     BlockEffect blockEffect = playerBuildingJump.getCurrentJump().getEffectBlocks().get(playerLoc.clone().add(0, -1, 0));
                     if (blockEffect != null)
+                        blockEffect.playerUp(playerBuildingJump);
+
+                    blockEffect = playerBuildingJump.getCurrentJump().getEffectBlocks().get(playerLoc.clone().add(0, 2, 0));
+                    if (blockEffect != null)
                         blockEffect.playerDown(playerBuildingJump);
 
                     blockEffect = playerBuildingJump.getCurrentJump().getEffectBlocks().get(playerLoc.clone().add(0, 1, 0));
                     if (blockEffect != null)
-                        blockEffect.playerUp(playerBuildingJump);
+                        blockEffect.playerOn(playerBuildingJump);
 
                     blockEffect = playerBuildingJump.getCurrentJump().getEffectBlocks().get(playerLoc);
                     if (blockEffect != null)

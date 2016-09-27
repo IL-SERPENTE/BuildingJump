@@ -3,6 +3,7 @@ package fr.azuxul.buildingjump.jump.block;
 import fr.azuxul.buildingjump.ItemUtils;
 import fr.azuxul.buildingjump.jump.block.effect.BlockEffect;
 import fr.azuxul.buildingjump.jump.block.effect.BlockEnd;
+import fr.azuxul.buildingjump.jump.block.effect.BlockJump;
 import fr.azuxul.buildingjump.jump.block.effect.BlockStart;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,7 +20,8 @@ public enum BlockType {
     NORMAL(0, null, null, null),
     START(1, ItemUtils.addDisplayNameAndLore(new ItemStack(Material.IRON_PLATE), "Debut du jump", ChatColor.WHITE + ""), BlockStart.class, Material.AIR),
     CHECKPOINT(2, ItemUtils.addDisplayNameAndLore(new ItemStack(Material.IRON_PLATE), "Checkpoint", ChatColor.WHITE + ""), null, Material.IRON_PLATE),
-    END(3, ItemUtils.addDisplayNameAndLore(new ItemStack(Material.IRON_PLATE), "Fin du jump", ChatColor.WHITE + ""), BlockEnd.class, Material.IRON_PLATE);
+    END(3, ItemUtils.addDisplayNameAndLore(new ItemStack(Material.IRON_PLATE), "Fin du jump", ChatColor.WHITE + ""), BlockEnd.class, Material.IRON_PLATE),
+    JUMP(4, ItemUtils.addDisplayNameAndLore(new ItemStack(Material.STAINED_CLAY, 1, (short) 6), "JUMP BOST", ChatColor.GREEN + ""), BlockJump.class, Material.STAINED_CLAY);
 
     private final int id;
     private final ItemStack itemStack;
