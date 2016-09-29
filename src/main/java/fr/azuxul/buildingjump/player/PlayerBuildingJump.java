@@ -4,9 +4,12 @@ import fr.azuxul.buildingjump.BuildingJumpGame;
 import fr.azuxul.buildingjump.BuildingJumpPlugin;
 import fr.azuxul.buildingjump.invetory.GUIItems;
 import fr.azuxul.buildingjump.jump.Jump;
+import net.minecraft.server.v1_9_R2.PacketPlayOutWorldBorder;
+import net.minecraft.server.v1_9_R2.WorldBorder;
 import net.samagames.api.games.GamePlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -146,6 +149,17 @@ public class PlayerBuildingJump extends GamePlayer {
         getPlayerIfOnline().teleport(jump.getSpawn());
         getPlayerIfOnline().setGameMode(GameMode.CREATIVE);
 
+        WorldBorder worldBorder = new WorldBorder();
+
+        worldBorder.setCenter(jump.getJumpCenter().getBlockX(), jump.getJumpCenter().getBlockZ());
+        worldBorder.setDamageAmount(0);
+        worldBorder.setDamageBuffer(0);
+        worldBorder.setSize(jump.getSize() * 2);
+        worldBorder.setWarningDistance(0);
+        worldBorder.setWarningTime(0);
+
+        ((CraftPlayer) getPlayerIfOnline()).getHandle().playerConnection.sendPacket(new PacketPlayOutWorldBorder(worldBorder, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE));
+
         currentJump = jump;
     }
 
@@ -163,6 +177,17 @@ public class PlayerBuildingJump extends GamePlayer {
 
         getPlayerIfOnline().setGameMode(GameMode.ADVENTURE);
         getPlayerIfOnline().teleport(buildingJumpGame.getConfiguration().getHubLocation());
+
+        WorldBorder worldBorder = new WorldBorder();
+
+        Location loc = buildingJumpGame.getConfiguration().getHubLocation();
+
+        worldBorder.setCenter(loc.getBlockX(), loc.getBlockZ());
+        worldBorder.setSize(2000);
+        worldBorder.setWarningDistance(0);
+
+        ((CraftPlayer) getPlayerIfOnline()).getHandle().playerConnection.sendPacket(new PacketPlayOutWorldBorder(worldBorder, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE));
+
 
         currentJump = null;
     }

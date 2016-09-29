@@ -122,6 +122,10 @@ public class Jump {
         return spawn.clone();
     }
 
+    public Location getJumpCenter() {
+        return worldLoc;
+    }
+
     public Location getSpawn() {
         spawn.setWorld(worldLoc.getWorld());
 
