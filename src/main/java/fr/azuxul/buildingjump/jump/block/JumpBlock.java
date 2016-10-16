@@ -5,6 +5,8 @@ import fr.azuxul.buildingjump.jump.block.effect.BlockEffect;
 import org.bukkit.Material;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -19,6 +21,7 @@ public class JumpBlock {
     private final Material material;
     private final byte dataValue;
     private final BlockType blockType;
+    private final List<String> extraData;
     private BlockEffect blockEffect;
 
     public JumpBlock(Material material, byte dataValue, BlockType blockType, JumpLocation jumpLocation) {
@@ -27,6 +30,11 @@ public class JumpBlock {
         this.material = material;
         this.dataValue = dataValue;
         this.blockType = blockType;
+        this.extraData = new ArrayList<>();
+    }
+
+    public List<String> getExtraData() {
+        return extraData;
     }
 
     private void generateBlockEffect() {

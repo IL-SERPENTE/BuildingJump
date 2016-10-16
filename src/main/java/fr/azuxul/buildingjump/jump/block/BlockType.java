@@ -27,12 +27,34 @@ public enum BlockType {
     private final ItemStack itemStack;
     private final Class<? extends BlockEffect> effectClass;
     private final Material realMaterial;
+    private final int maxLevelEffect1;
+    private final int maxLevelEffect2;
+
+    BlockType(int id, ItemStack itemStack, Class<? extends BlockEffect> effectClass, Material realMaterial, int levels) {
+        this.id = id;
+        this.itemStack = itemStack;
+        this.effectClass = effectClass;
+        this.realMaterial = realMaterial;
+        this.maxLevelEffect1 = levels;
+        this.maxLevelEffect2 = -1;
+    }
+
+    BlockType(int id, ItemStack itemStack, Class<? extends BlockEffect> effectClass, Material realMaterial, int levelsEffect1, int levelsEffect2) {
+        this.id = id;
+        this.itemStack = itemStack;
+        this.effectClass = effectClass;
+        this.realMaterial = realMaterial;
+        this.maxLevelEffect1 = levelsEffect1;
+        this.maxLevelEffect2 = levelsEffect2;
+    }
 
     BlockType(int id, ItemStack itemStack, Class<? extends BlockEffect> effectClass, Material realMaterial) {
         this.id = id;
         this.itemStack = itemStack;
         this.effectClass = effectClass;
         this.realMaterial = realMaterial;
+        this.maxLevelEffect1 = -1;
+        this.maxLevelEffect2 = -1;
     }
 
     public static BlockType isSpecialBlock(ItemStack itemStack) {
@@ -58,5 +80,17 @@ public enum BlockType {
 
     public Class<? extends BlockEffect> getEffectClass() {
         return effectClass;
+    }
+
+    public int getMaxLevelEffect1() {
+        return maxLevelEffect1;
+    }
+
+    public int getMaxLevelEffect2() {
+        return maxLevelEffect2;
+    }
+
+    public boolean hasLevels() {
+        return maxLevelEffect1 > 0;
     }
 }

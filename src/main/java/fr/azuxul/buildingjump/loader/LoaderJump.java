@@ -224,6 +224,7 @@ public class LoaderJump {
                 object.add("value", new JsonPrimitive(e.getKey().getDataValue()));
                 object.add("type", new JsonPrimitive(e.getKey().getBlockType().getId()));
 
+
                 for (JumpLocation jumpLocation : e.getValue())
                     locArray.add(new JsonPrimitive(jumpLocationToStringLocation(jumpLocation)));
 

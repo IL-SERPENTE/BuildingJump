@@ -7,6 +7,7 @@ import fr.azuxul.buildingjump.jump.block.effect.BlockEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -73,6 +74,16 @@ public class Jump {
             Block block = worldLoc.clone().add(e.getKey().getX(), e.getKey().getY(), e.getKey().getZ()).getBlock();
             e.getValue().getJumpLocation().setJumpCenter(worldLoc);
             block.setTypeIdAndData(e.getValue().getMaterial().getId(), e.getValue().getDataValue(), true);
+
+            if (e.getValue().getMaterial().equals(Material.SIGN_POST) || e.getValue().getMaterial().equals(Material.WALL_SIGN)) {
+
+                Sign sign = ((Sign) block.getState());
+
+                for (int i = 0; i < 4; i++)
+                    sign.setLine(i, e.getValue().getExtraData().get(i));
+
+                sign.update();
+            }
 
             if (!e.getValue().getBlockType().equals(BlockType.NORMAL)) {
                 effectBlocks.put(e.getKey().getLocation(), e.getValue().getBlockEffect());
@@ -172,6 +183,17 @@ public class Jump {
                             jumpBlock = new JumpBlock(loc.getBlock().getType(), loc.getBlock().getData(), blockEffect.getType(), jumpLocation);
                         } else {
                             jumpBlock = new JumpBlock(loc.getBlock().getType(), loc.getBlock().getData(), BlockType.NORMAL, jumpLocation);
+                        }
+
+                        // Add extra data
+                        if (loc.getBlock().getType().equals(Material.SIGN_POST) || loc.getBlock().getType().equals(Material.WALL_SIGN)) {
+                            Sign sign = ((Sign) loc.getBlock().getState());
+
+                            for (int i = 0; i < 4; i++)
+                                jumpBlock.getExtraData().add(sign.getLine(i));
+                        }
+                        if (blockEffect != null && !blockEffect.getExtraData().isEmpty()) {
+                            jumpBlock.getExtraData().addAll(blockEffect.getExtraData());
                         }
 
                         blocksSave.put(jumpLocation, jumpBlock);

@@ -21,14 +21,12 @@ public class InventoryGUIJumpBuilder extends InventoryGUI implements InventoryHo
     private static final ItemStack BLOCKS = new ItemStack(Material.BEDROCK);
     private static final ItemStack TEST = new ItemStack(Material.IRON_PLATE);
 
-    private final BuildingJumpGame buildingJumpGame;
     private final Jump jump;
 
     public InventoryGUIJumpBuilder(BuildingJumpGame buildingJumpGame, Player player) {
 
         super(buildingJumpGame, player, 27, "...");
 
-        this.buildingJumpGame = buildingJumpGame;
         this.jump = buildingJumpGame.getJumpManager().getPlayerLoadedJump(buildingJumpGame.getPlayer(player));
 
         initInventory();
@@ -50,6 +48,7 @@ public class InventoryGUIJumpBuilder extends InventoryGUI implements InventoryHo
         if (itemStack.equals(LEAVE)) {
 
             buildingJumpGame.getJumpManager().unregisterPlayerJump(playerBuildingJump);
+            playerBuildingJump.leaveBuild();
             playerBuildingJump.sendToHub();
         } else if (itemStack.equals(SPAWN)) {
 

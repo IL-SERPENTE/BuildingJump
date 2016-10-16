@@ -29,30 +29,31 @@ public class BuildingJumpClock implements Runnable {
                 blockEffect.displayParticles();
         }));
 
-        for (PlayerBuildingJump playerBuildingJump : buildingJumpGame.getPlayerInBuildAndTest()) {
+        buildingJumpGame.getInGamePlayers().values().stream().filter(playerBuildingJump1 -> playerBuildingJump1.getState().equals(PlayerState.TEST) || playerBuildingJump1.getState().equals(PlayerState.BUILD)).forEach(this::updatePlayer);
+    }
 
-            if (playerBuildingJump.getState().equals(PlayerState.TEST)) {
-                Location playerLoc = playerBuildingJump.getPlayerIfOnline().getLocation().getBlock().getLocation();
+    private void updatePlayer(PlayerBuildingJump playerBuildingJump) {
+        if (playerBuildingJump.getState().equals(PlayerState.TEST)) {
+            Location playerLoc = playerBuildingJump.getPlayerIfOnline().getLocation().getBlock().getLocation();
 
-                if (playerLoc.getY() <= 0) {
-                    playerBuildingJump.teleportToCheckpoint();
-                } else {
-                    BlockEffect blockEffect = playerBuildingJump.getCurrentJump().getEffectBlocks().get(playerLoc.clone().add(0, -1, 0));
-                    if (blockEffect != null)
-                        blockEffect.playerUp(playerBuildingJump);
+            if (playerLoc.getY() <= 0) {
+                playerBuildingJump.teleportToCheckpoint();
+            } else {
+                BlockEffect blockEffect = playerBuildingJump.getCurrentJump().getEffectBlocks().get(playerLoc.clone().add(0, -1, 0));
+                if (blockEffect != null)
+                    blockEffect.playerUp(playerBuildingJump);
 
-                    blockEffect = playerBuildingJump.getCurrentJump().getEffectBlocks().get(playerLoc.clone().add(0, 2, 0));
-                    if (blockEffect != null)
-                        blockEffect.playerDown(playerBuildingJump);
+                blockEffect = playerBuildingJump.getCurrentJump().getEffectBlocks().get(playerLoc.clone().add(0, 2, 0));
+                if (blockEffect != null)
+                    blockEffect.playerDown(playerBuildingJump);
 
-                    blockEffect = playerBuildingJump.getCurrentJump().getEffectBlocks().get(playerLoc.clone().add(0, 1, 0));
-                    if (blockEffect != null)
-                        blockEffect.playerOn(playerBuildingJump);
+                blockEffect = playerBuildingJump.getCurrentJump().getEffectBlocks().get(playerLoc.clone().add(0, 1, 0));
+                if (blockEffect != null)
+                    blockEffect.playerOn(playerBuildingJump);
 
-                    blockEffect = playerBuildingJump.getCurrentJump().getEffectBlocks().get(playerLoc);
-                    if (blockEffect != null)
-                        blockEffect.playerOn(playerBuildingJump);
-                }
+                blockEffect = playerBuildingJump.getCurrentJump().getEffectBlocks().get(playerLoc);
+                if (blockEffect != null)
+                    blockEffect.playerOn(playerBuildingJump);
             }
         }
     }

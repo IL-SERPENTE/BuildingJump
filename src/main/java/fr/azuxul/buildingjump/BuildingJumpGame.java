@@ -11,9 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Game instance of BuildingJump plugin
  *
@@ -28,8 +25,6 @@ public class BuildingJumpGame extends Game<PlayerBuildingJump> {
     private final JumpManager jumpManager;
     private final LoaderPlayer loaderPlayer;
     private final BuildingJumpClock buildingJumpClock;
-    private final Set<PlayerBuildingJump> playerInHub;
-    private final Set<PlayerBuildingJump> playerInBuildAndTest;
 
     public BuildingJumpGame(JavaPlugin javaPlugin) {
 
@@ -41,9 +36,6 @@ public class BuildingJumpGame extends Game<PlayerBuildingJump> {
         this.jumpManager = new JumpManager(this);
         this.loaderPlayer = new LoaderPlayer(this);
         this.buildingJumpClock = new BuildingJumpClock(this);
-
-        this.playerInHub = new HashSet<>();
-        this.playerInBuildAndTest = new HashSet<>();
     }
 
     public BuildingJumpClock getBuildingJumpClock() {
@@ -56,14 +48,6 @@ public class BuildingJumpGame extends Game<PlayerBuildingJump> {
 
     public JumpManager getJumpManager() {
         return jumpManager;
-    }
-
-    public Set<PlayerBuildingJump> getPlayerInHub() {
-        return playerInHub;
-    }
-
-    public Set<PlayerBuildingJump> getPlayerInBuildAndTest() {
-        return playerInBuildAndTest;
     }
 
     public Server getServer() {

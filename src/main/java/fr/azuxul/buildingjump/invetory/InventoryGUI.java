@@ -15,9 +15,11 @@ public abstract class InventoryGUI implements IInventoryGUI, InventoryHolder {
 
     protected final Player player;
     protected final Inventory inventory;
+    protected final BuildingJumpGame buildingJumpGame;
 
     InventoryGUI(BuildingJumpGame buildingJumpGame, Player player, int size, String name) {
 
+        this.buildingJumpGame = buildingJumpGame;
         this.inventory = buildingJumpGame.getServer().createInventory(this, size, name);
         this.player = player;
     }

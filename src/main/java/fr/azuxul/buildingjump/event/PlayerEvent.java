@@ -1,5 +1,6 @@
 package fr.azuxul.buildingjump.event;
 
+import fr.azuxul.buildingjump.ActionItems;
 import fr.azuxul.buildingjump.BuildingJumpGame;
 import fr.azuxul.buildingjump.invetory.GUIItems;
 import fr.azuxul.buildingjump.invetory.InventoryGUI;
@@ -62,6 +63,14 @@ public class PlayerEvent implements Listener {
                 }
             }
 
+            if (event.getItem().isSimilar(ActionItems.LEAVE_JUMP.getItemStack())) {
+                if (playerBuildingJump.getState().equals(PlayerState.TEST)) {
+                    playerBuildingJump.sendToBuild(playerBuildingJump.getCurrentJump().getJumpMeta().getUuid());
+                } else {
+                    playerBuildingJump.sendToHub();
+                }
+            }
+
             if (event.getItem().getType().isBlock() && playerBuildingJump.getState().equals(PlayerState.BUILD) && event.getPlayer().isSneaking() && event.getPlayer().isFlying()) {
 
                 Block block = event.getPlayer().getLocation().clone().add(0, -1, 0).getBlock();
@@ -101,19 +110,19 @@ public class PlayerEvent implements Listener {
         PlayerBuildingJump playerBuildingJump = buildingJumpGame.getPlayer(event.getPlayer());
 
         if (PlayerState.HUB.equals(playerBuildingJump.getState())) {
-            for (PlayerBuildingJump player : buildingJumpGame.getPlayerInHub()) {
+            buildingJumpGame.getInGamePlayers().values().stream().filter(playerBuildingJump1 -> playerBuildingJump1.getState().equals(PlayerState.HUB)).forEach(player -> {
                 Player bukkitPlayer = player.getPlayerIfOnline();
 
                 if (bukkitPlayer != null)
                     bukkitPlayer.sendMessage(event.getPlayer().getDisplayName() + ": " + event.getMessage());
-            }
+            });
         } else if (PlayerState.TEST.equals(playerBuildingJump.getState()) || PlayerState.BUILD.equals(playerBuildingJump.getState())) {
-            for (PlayerBuildingJump player : buildingJumpGame.getPlayerInBuildAndTest()) {
+            buildingJumpGame.getInGamePlayers().values().stream().filter(playerBuildingJump1 -> playerBuildingJump1.getState().equals(PlayerState.TEST) || playerBuildingJump1.getState().equals(PlayerState.BUILD)).forEach(player -> {
                 Player bukkitPlayer = player.getPlayerIfOnline();
 
                 if (bukkitPlayer != null)
                     bukkitPlayer.sendMessage(event.getPlayer().getDisplayName() + ": " + event.getMessage());
-            }
+            });
         }
 
         event.setCancelled(true);

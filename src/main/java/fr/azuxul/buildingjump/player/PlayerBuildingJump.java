@@ -1,5 +1,6 @@
 package fr.azuxul.buildingjump.player;
 
+import fr.azuxul.buildingjump.ActionItems;
 import fr.azuxul.buildingjump.BuildingJumpGame;
 import fr.azuxul.buildingjump.BuildingJumpPlugin;
 import fr.azuxul.buildingjump.invetory.GUIItems;
@@ -109,22 +110,21 @@ public class PlayerBuildingJump extends GamePlayer {
     public void testJump() {
         state = PlayerState.TEST;
 
-        getPlayerIfOnline().teleport(currentJump.getSpawn());
-        getPlayerIfOnline().setFlying(false);
-        getPlayerIfOnline().setAllowFlight(false);
-        getPlayerIfOnline().setGameMode(GameMode.ADVENTURE);
+        Player player = getPlayerIfOnline();
+
+        player.teleport(currentJump.getSpawn());
+        player.setFlying(false);
+        player.setAllowFlight(false);
+        player.setGameMode(GameMode.ADVENTURE);
+        player.getInventory().clear();
+        player.getInventory().setItem(8, ActionItems.LEAVE_JUMP.getItemStack());
     }
 
     public void leaveBuild() {
-        buildingJumpGame.getPlayerInBuildAndTest().remove(this);
         buildingJumpGame.getJumpManager().unregisterPlayerJump(this);
     }
 
     public void sendToBuild(UUID jumpUUID) {
-        buildingJumpGame.getPlayerInHub().remove(this);
-
-        if(!buildingJumpGame.getPlayerInBuildAndTest().contains(this))
-            buildingJumpGame.getPlayerInBuildAndTest().add(this);
 
         Jump jump;
 
@@ -164,9 +164,6 @@ public class PlayerBuildingJump extends GamePlayer {
     }
 
     public void sendToHub() {
-
-        if (!buildingJumpGame.getPlayerInHub().contains(this))
-            buildingJumpGame.getPlayerInHub().add(this);
 
         state = PlayerState.HUB;
 
