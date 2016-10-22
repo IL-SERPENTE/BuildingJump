@@ -75,7 +75,7 @@ public class PlayerEvent implements Listener {
 
                 Block block = event.getPlayer().getLocation().clone().add(0, -1, 0).getBlock();
 
-                Jump jump = buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump);
+                Jump jump = playerBuildingJump.getCurrentJump();
 
                 block.setTypeIdAndData(event.getItem().getType().getId(), event.getItem().getData().getData(), true);
                 if (!jump.canPlace(block)) {
@@ -139,7 +139,7 @@ public class PlayerEvent implements Listener {
                 event.getBlock().setType(blockType.getRealMaterial());
             }
 
-            Jump jump = buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump);
+            Jump jump = playerBuildingJump.getCurrentJump();
 
             if (!jump.canPlace(event.getBlock())) {
                 event.setCancelled(true);
@@ -158,7 +158,7 @@ public class PlayerEvent implements Listener {
         PlayerBuildingJump playerBuildingJump = buildingJumpGame.getPlayer(event.getPlayer());
         if (playerBuildingJump.getState().equals(PlayerState.BUILD)) {
             buildingJumpGame.getServer().getScheduler().runTaskLater(buildingJumpGame.getPlugin(), () -> {
-                Jump jump = buildingJumpGame.getJumpManager().getPlayerLoadedJump(playerBuildingJump);
+                Jump jump = playerBuildingJump.getCurrentJump();
 
                 if (!jump.canPlace(event.getBlock())) {
                     event.getPlayer().sendMessage("e");

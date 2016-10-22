@@ -27,7 +27,7 @@ public class InventoryGUIJumpBuilder extends InventoryGUI implements InventoryHo
 
         super(buildingJumpGame, player, 27, "...");
 
-        this.jump = buildingJumpGame.getJumpManager().getPlayerLoadedJump(buildingJumpGame.getPlayer(player));
+        this.jump = buildingJumpGame.getPlayer(player).getCurrentJump();
 
         initInventory();
     }
@@ -47,8 +47,6 @@ public class InventoryGUIJumpBuilder extends InventoryGUI implements InventoryHo
 
         if (itemStack.equals(LEAVE)) {
 
-            buildingJumpGame.getJumpManager().unregisterPlayerJump(playerBuildingJump);
-            playerBuildingJump.leaveBuild();
             playerBuildingJump.sendToHub();
         } else if (itemStack.equals(SPAWN)) {
 

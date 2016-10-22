@@ -14,6 +14,9 @@ import org.bukkit.potion.PotionEffectType;
  */
 public class BlockJump extends BlockEffect {
 
+    private int level;
+    private int duration;
+
     public BlockJump(JumpBlock jumpBlock) {
         super(jumpBlock, BlockType.JUMP);
     }
@@ -30,7 +33,7 @@ public class BlockJump extends BlockEffect {
 
     @Override
     public void playerUp(PlayerBuildingJump playerBuildingJump) {
-        playerBuildingJump.getPlayerIfOnline().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, 5));
+        playerBuildingJump.getPlayerIfOnline().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, duration, level - 1));
 
     }
 

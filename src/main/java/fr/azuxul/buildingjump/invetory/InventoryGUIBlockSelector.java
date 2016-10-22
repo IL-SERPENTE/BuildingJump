@@ -43,7 +43,7 @@ public class InventoryGUIBlockSelector extends InventoryGUI {
 
         if (!itemStack.isSimilar(BACK)) {
             BlockType blockType = items.get(itemStack);
-            if (blockType.hasLevels()) {
+            if (true) {
                 new InventoryGUIAdvanceBlockSelector(buildingJumpGame, player, blockType).display();
             } else {
                 player.getInventory().setItem(8, itemStack.clone());

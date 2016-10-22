@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -120,10 +121,6 @@ public class PlayerBuildingJump extends GamePlayer {
         player.getInventory().setItem(8, ActionItems.LEAVE_JUMP.getItemStack());
     }
 
-    public void leaveBuild() {
-        buildingJumpGame.getJumpManager().unregisterPlayerJump(this);
-    }
-
     public void sendToBuild(UUID jumpUUID) {
 
         Jump jump;
@@ -131,6 +128,8 @@ public class PlayerBuildingJump extends GamePlayer {
         if (jumpUUID == null) {
             jump = new Jump(getUUID(), 50, new HashMap<>(), buildingJumpGame);
             playerData.getJumpsUUID().add(jump.getJumpMeta().getUuid());
+        } else if (buildingJumpGame.getJumpManager().getJumps().get(uuid) != null && buildingJumpGame.getJumpManager().getJumps().get(uuid).getLastLoadedUpdate() + 900000 >= new Date().getTime()) {
+            jump = buildingJumpGame.getJumpManager().getJumps().get(uuid);
         } else {
             jump = buildingJumpGame.getJumpManager().loadJumpSave(jumpUUID);
         }
@@ -142,7 +141,7 @@ public class PlayerBuildingJump extends GamePlayer {
         inventory.clear();
         inventory.setItem(0, GUIItems.BUILD_MENU.getItemStack());
 
-        buildingJumpGame.getJumpManager().registerJump(jump, this);
+        buildingJumpGame.getJumpManager().registerJump(jump);
 
         getPlayerIfOnline().setAllowFlight(true);
         getPlayerIfOnline().setFlying(true);
@@ -166,6 +165,7 @@ public class PlayerBuildingJump extends GamePlayer {
     public void sendToHub() {
 
         state = PlayerState.HUB;
+        currentJump = null;
 
         Inventory inventory = getPlayerIfOnline().getInventory();
 

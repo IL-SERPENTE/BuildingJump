@@ -32,6 +32,7 @@ public class Jump {
     private Location worldLoc;
     private Location spawn;
     private boolean loaded;
+    private long lastLoadedUpdate;
 
     public Jump(JumpMeta jumpMeta, int size, Map<JumpLocation, JumpBlock> blocks, BuildingJumpGame buildingJumpGame, boolean newJump, Location spawn) {
 
@@ -43,11 +44,20 @@ public class Jump {
 
         this.effectBlocks = new HashMap<>();
         this.firstInit = newJump;
+        this.lastLoadedUpdate = new Date().getTime();
     }
 
     public Jump(UUID uuid, int size, Map<JumpLocation, JumpBlock> blocks, BuildingJumpGame buildingJumpGame) {
 
         this(new JumpMeta(buildingJumpGame.getJumpManager().getNewJumpUUID(), uuid, new Date().getTime(), "Nouveau jump", -1, -1), size, blocks, buildingJumpGame, true, new Location(null, 0, 3, 0, 0, 0));
+    }
+
+    public long getLastLoadedUpdate() {
+        return lastLoadedUpdate;
+    }
+
+    public void setLastLoadedUpdate(long lastLoadedUpdate) {
+        this.lastLoadedUpdate = lastLoadedUpdate;
     }
 
     public JumpMeta getJumpMeta() {

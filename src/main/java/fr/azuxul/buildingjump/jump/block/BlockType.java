@@ -21,7 +21,7 @@ public enum BlockType {
     START(1, ItemUtils.addDisplayNameAndLore(new ItemStack(Material.IRON_PLATE), "Debut du jump", ChatColor.WHITE + ""), BlockStart.class, Material.AIR),
     CHECKPOINT(2, ItemUtils.addDisplayNameAndLore(new ItemStack(Material.IRON_PLATE), "Checkpoint", ChatColor.WHITE + ""), null, Material.IRON_PLATE),
     END(3, ItemUtils.addDisplayNameAndLore(new ItemStack(Material.IRON_PLATE), "Fin du jump", ChatColor.WHITE + ""), BlockEnd.class, Material.IRON_PLATE),
-    JUMP(4, ItemUtils.addDisplayNameAndLore(new ItemStack(Material.STAINED_CLAY, 1, (short) 6), "JUMP BOST", ChatColor.GREEN + ""), BlockJump.class, Material.STAINED_CLAY);
+    JUMP(4, ItemUtils.addDisplayNameAndLore(new ItemStack(Material.STAINED_CLAY, 1, (short) 6), "JUMP BOST", ChatColor.GREEN + ""), BlockJump.class, Material.STAINED_CLAY, 5, 20);
 
     private final int id;
     private final ItemStack itemStack;
