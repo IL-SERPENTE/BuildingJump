@@ -33,7 +33,7 @@ public class BuildingJumpClock implements Runnable {
     }
 
     private void updatePlayer(PlayerBuildingJump playerBuildingJump) {
-        if (playerBuildingJump.getState().equals(PlayerState.TEST)) {
+        if (playerBuildingJump.getState().equals(PlayerState.TEST) || playerBuildingJump.getState().equals(PlayerState.JUMP)) {
             Location playerLoc = playerBuildingJump.getPlayerIfOnline().getLocation().getBlock().getLocation();
 
             if (playerLoc.getY() <= 0) {
@@ -55,6 +55,8 @@ public class BuildingJumpClock implements Runnable {
                 if (blockEffect != null)
                     blockEffect.playerOn(playerBuildingJump);
             }
+
+            playerBuildingJump.getCurrentJump().setLastLoadedUpdate(System.currentTimeMillis());
         }
     }
 }

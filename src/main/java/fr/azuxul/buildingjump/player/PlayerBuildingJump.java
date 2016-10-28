@@ -108,6 +108,31 @@ public class PlayerBuildingJump extends GamePlayer {
         this.state = state;
     }
 
+    public void sendToJump(UUID jumpUUID) {
+
+        Jump jump;
+
+        if (jumpUUID == null) {
+            jump = new Jump(getUUID(), 50, new HashMap<>(), buildingJumpGame);
+            playerData.getJumpsUUID().add(jump.getJumpMeta().getUuid());
+        } else if (buildingJumpGame.getJumpManager().getJumps().get(uuid) != null && buildingJumpGame.getJumpManager().getJumps().get(uuid).getLastLoadedUpdate() + 900000 >= new Date().getTime()) {
+            jump = buildingJumpGame.getJumpManager().getJumps().get(uuid);
+        } else {
+            jump = buildingJumpGame.getJumpManager().loadJumpSave(jumpUUID);
+        }
+
+        state = PlayerState.BUILD;
+
+        getPlayerIfOnline().teleport(jump.getSpawn());
+        getPlayerIfOnline().setFlying(false);
+        getPlayerIfOnline().setAllowFlight(false);
+        getPlayerIfOnline().setGameMode(GameMode.ADVENTURE);
+
+        initWorldBorder(jump);
+
+        currentJump = jump;
+    }
+
     public void testJump() {
         state = PlayerState.TEST;
 
@@ -148,6 +173,13 @@ public class PlayerBuildingJump extends GamePlayer {
         getPlayerIfOnline().teleport(jump.getSpawn());
         getPlayerIfOnline().setGameMode(GameMode.CREATIVE);
 
+        initWorldBorder(jump);
+
+        currentJump = jump;
+    }
+
+    private void initWorldBorder(Jump jump) {
+
         WorldBorder worldBorder = new WorldBorder();
 
         worldBorder.setCenter(jump.getJumpCenter().getBlockX(), jump.getJumpCenter().getBlockZ());
@@ -158,8 +190,6 @@ public class PlayerBuildingJump extends GamePlayer {
         worldBorder.setWarningTime(0);
 
         ((CraftPlayer) getPlayerIfOnline()).getHandle().playerConnection.sendPacket(new PacketPlayOutWorldBorder(worldBorder, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE));
-
-        currentJump = jump;
     }
 
     public void sendToHub() {
