@@ -1,5 +1,6 @@
 package fr.azuxul.buildingjump;
 
+import fr.azuxul.buildingjump.command.CommandBlockGive;
 import fr.azuxul.buildingjump.event.PlayerEvent;
 import net.samagames.api.SamaGamesAPI;
 import org.bukkit.ChatColor;
@@ -33,6 +34,8 @@ public class BuildingJumpPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new PlayerEvent(buildingJumpGame), this);
         getServer().getScheduler().runTaskTimer(this, buildingJumpGame.getBuildingJumpClock(), 5L, 1L);
+
+        getServer().getPluginCommand("blockgive").setExecutor(new CommandBlockGive(buildingJumpGame));
 
         getServer().getOnlinePlayers().forEach(player -> player.kickPlayer(ChatColor.RED + "Game loading"));
     }

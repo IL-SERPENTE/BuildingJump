@@ -59,7 +59,7 @@ public enum BlockType {
 
     public static BlockType isSpecialBlock(ItemStack itemStack) {
         for (BlockType b : values()) {
-            if (itemStack.equals(b.getItemStack()))
+            if (itemStack.getItemMeta().getDisplayName().equals(b.getItemStack().getItemMeta().getDisplayName()) && itemStack.getType().equals(b.getItemStack().getType()))
                 return b;
         }
 
