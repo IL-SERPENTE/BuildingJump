@@ -1,7 +1,11 @@
-name: BuildingJump
-main: fr.azuxul.buildingjump.BuildingJumpPlugin
+name: buildingjump
+main: eu.carrade.amaury.samagames.buildingjump.BuildingJump
 version: 1.0.0
 author: Azuxul
+authors: [AmauryPi]
+
 depend: [SamaGamesAPI]
+load: STARTUP
+
 commands:
-  blockgive:
+    bjump:
