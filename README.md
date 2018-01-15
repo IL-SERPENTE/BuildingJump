@@ -12,7 +12,7 @@ Pour plus de détails, référez-vous au texte de licence disponible [ici](LICEN
 - Nom : BuildingJump
 - Type : Mini-jeu permanent
 - État : En développement (~40%)
-- Développeur(s) : AmauryPi
+- Développeur(s) : AmauryPi (et Azuxul)
 - [CDC disponible ici](https://www.samagames.net/ressources/building-jump.pdf)
 
 
