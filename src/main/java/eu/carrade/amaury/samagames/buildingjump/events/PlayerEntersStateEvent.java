@@ -29,53 +29,59 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package eu.carrade.amaury.samagames.buildingjump.sidebars;
+package eu.carrade.amaury.samagames.buildingjump.events;
 
-import eu.carrade.amaury.samagames.buildingjump.BuildingJump;
 import eu.carrade.amaury.samagames.buildingjump.game.BuildingJumpPlayer;
-import eu.carrade.amaury.samagames.buildingjump.jumps.Jump;
-import fr.zcraft.zlib.components.scoreboard.Sidebar;
-import fr.zcraft.zlib.components.scoreboard.SidebarMode;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
-import java.util.Arrays;
-import java.util.List;
+import org.bukkit.event.HandlerList;
 
 
-public class EditSidebar extends Sidebar
+/**
+ * Event called when a player enters a state. When called, the new state was just set.
+ *
+ * @see PlayerLeavesStateEvent Event called when the player leaves the previous state (if any).
+ */
+public class PlayerEntersStateEvent extends BuildingJumpPlayerEvent
 {
-    public EditSidebar()
+    private static final HandlerList handlers = new HandlerList();
+
+    private final BuildingJumpPlayer.PlayerState newState;
+
+    /**
+     * @param player The player
+     * @param newState The state the player just entered.
+     */
+    public PlayerEntersStateEvent(Player player, BuildingJumpPlayer.PlayerState newState)
     {
-        setTitleMode(SidebarMode.PER_PLAYER);
-        setContentMode(SidebarMode.PER_PLAYER);
+        super(player);
+        this.newState = newState;
+    }
+
+    /**
+     * @param player The player
+     * @param newState The state the player just entered.
+     */
+    public PlayerEntersStateEvent(BuildingJumpPlayer player, BuildingJumpPlayer.PlayerState newState)
+    {
+        super(player.getPlayerIfOnline(), player);
+        this.newState = newState;
+    }
+
+    /**
+     * @return The state the player just entered.
+     */
+    public BuildingJumpPlayer.PlayerState getNewState()
+    {
+        return newState;
     }
 
     @Override
-    public List<String> getContent(Player player)
+    public HandlerList getHandlers()
     {
-        final BuildingJumpPlayer bPlayer = BuildingJump.get().getGame().getPlayer(player.getUniqueId());
-        final Jump jump = bPlayer.getCurrentJump().getJump();
-
-        return Arrays.asList(
-                "",
-                jump.isPublished() ? ChatColor.GREEN + "Ouvert à tous" : ChatColor.RED + "Non publié",
-                "",
-                ChatColor.GRAY + "Temps moyen : " + ChatColor.WHITE + "--:--",
-                ChatColor.GRAY + "Note moyenne : " + ChatColor.WHITE + "---",
-                "",
-                ChatColor.WHITE + "Utilisez " + ChatColor.AQUA + "l'étoile",
-                ChatColor.WHITE + "pour les options",
-                "",
-                ChatColor.DARK_GRAY + "ID : " + jump.getUniqueID().toString().substring(0, 6),
-                "",
-                ChatColor.YELLOW + "mc.samagames.net"
-        );
+        return handlers;
     }
 
-    @Override
-    public String getTitle(Player player)
-    {
-        return ChatColor.AQUA + "" + ChatColor.BOLD + BuildingJump.get().getGame().getPlayer(player.getUniqueId()).getCurrentJump().getJump().getName();
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 }

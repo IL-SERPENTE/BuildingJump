@@ -29,15 +29,20 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package eu.carrade.amaury.samagames.buildingjump.game;
+package eu.carrade.amaury.samagames.buildingjump.listeners;
 
-import net.samagames.api.games.Game;
+import eu.carrade.amaury.samagames.buildingjump.events.PlayerLeavesStateEvent;
+import fr.zcraft.zlib.core.ZLibComponent;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 
 
-public class BuildingJumpGame extends Game<BuildingJumpPlayer>
+public class GenericListener extends ZLibComponent implements Listener
 {
-    public BuildingJumpGame()
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerLeaveState(final PlayerLeavesStateEvent ev)
     {
-        super("buildingjump", "BuildingJump", "", BuildingJumpPlayer.class);
+        ev.getPlayer().getInventory().clear();
     }
 }

@@ -29,53 +29,37 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package eu.carrade.amaury.samagames.buildingjump.sidebars;
+package eu.carrade.amaury.samagames.buildingjump.events;
 
 import eu.carrade.amaury.samagames.buildingjump.BuildingJump;
 import eu.carrade.amaury.samagames.buildingjump.game.BuildingJumpPlayer;
-import eu.carrade.amaury.samagames.buildingjump.jumps.Jump;
-import fr.zcraft.zlib.components.scoreboard.Sidebar;
-import fr.zcraft.zlib.components.scoreboard.SidebarMode;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
-import java.util.Arrays;
-import java.util.List;
+import org.bukkit.event.Event;
 
 
-public class EditSidebar extends Sidebar
+public abstract class BuildingJumpPlayerEvent extends Event
 {
-    public EditSidebar()
+    private Player player;
+    private BuildingJumpPlayer bjPlayer;
+
+    public BuildingJumpPlayerEvent(Player player, BuildingJumpPlayer bjPlayer)
     {
-        setTitleMode(SidebarMode.PER_PLAYER);
-        setContentMode(SidebarMode.PER_PLAYER);
+        this.player = player;
+        this.bjPlayer = bjPlayer;
     }
 
-    @Override
-    public List<String> getContent(Player player)
+    public BuildingJumpPlayerEvent(Player player)
     {
-        final BuildingJumpPlayer bPlayer = BuildingJump.get().getGame().getPlayer(player.getUniqueId());
-        final Jump jump = bPlayer.getCurrentJump().getJump();
-
-        return Arrays.asList(
-                "",
-                jump.isPublished() ? ChatColor.GREEN + "Ouvert à tous" : ChatColor.RED + "Non publié",
-                "",
-                ChatColor.GRAY + "Temps moyen : " + ChatColor.WHITE + "--:--",
-                ChatColor.GRAY + "Note moyenne : " + ChatColor.WHITE + "---",
-                "",
-                ChatColor.WHITE + "Utilisez " + ChatColor.AQUA + "l'étoile",
-                ChatColor.WHITE + "pour les options",
-                "",
-                ChatColor.DARK_GRAY + "ID : " + jump.getUniqueID().toString().substring(0, 6),
-                "",
-                ChatColor.YELLOW + "mc.samagames.net"
-        );
+        this(player, BuildingJump.get().getGame().getPlayer(player.getUniqueId()));
     }
 
-    @Override
-    public String getTitle(Player player)
+    public Player getPlayer()
     {
-        return ChatColor.AQUA + "" + ChatColor.BOLD + BuildingJump.get().getGame().getPlayer(player.getUniqueId()).getCurrentJump().getJump().getName();
+        return player;
+    }
+
+    public BuildingJumpPlayer getBJPlayer()
+    {
+        return bjPlayer;
     }
 }

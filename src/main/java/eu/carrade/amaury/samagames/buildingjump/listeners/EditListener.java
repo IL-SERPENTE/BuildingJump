@@ -29,23 +29,34 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package eu.carrade.amaury.samagames.buildingjump.inventories;
+package eu.carrade.amaury.samagames.buildingjump.listeners;
 
+import eu.carrade.amaury.samagames.buildingjump.events.PlayerEntersStateEvent;
+import eu.carrade.amaury.samagames.buildingjump.game.BuildingJumpPlayer;
 import eu.carrade.amaury.samagames.buildingjump.gui.edit.EditGUI;
+import eu.carrade.amaury.samagames.buildingjump.jumps.JumpPlate;
 import fr.zcraft.zlib.components.gui.Gui;
 import fr.zcraft.zlib.tools.items.ItemStackBuilder;
 import fr.zcraft.zlib.tools.items.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 
-public class EditInventoryHandler extends InventoryHandler
+public class EditListener extends ByStateListener implements Listener
 {
     private static final String JUMP_EDIT_OPENER_NAME = ChatColor.AQUA + "Outils de parcours" + ChatColor.GRAY + " (cliquez)";
+
+    public EditListener()
+    {
+        super(BuildingJumpPlayer.PlayerState.EDIT);
+    }
+
 
     private ItemStack getEditGuiOpener()
     {
@@ -56,15 +67,19 @@ public class EditInventoryHandler extends InventoryHandler
                 .item();
     }
 
-    @Override
-    public void setup(Player player)
+    @EventHandler
+    public void onStateEnter(final PlayerEntersStateEvent ev)
     {
-        player.getInventory().setItem(8, getEditGuiOpener());
+        if (!check(ev)) return;
+
+        ev.getPlayer().getInventory().setItem(8, getEditGuiOpener());
     }
 
-    @Override
-    void onPlayerInteract(PlayerInteractEvent ev)
+    @EventHandler
+    void onPlayerInteract(final PlayerInteractEvent ev)
     {
+        if (!check(ev)) return;
+
         if (ItemUtils.areSimilar(ev.getItem(), getEditGuiOpener()))
         {
             Gui.open(ev.getPlayer(), new EditGUI());
@@ -72,9 +87,11 @@ public class EditInventoryHandler extends InventoryHandler
         }
     }
 
-    @Override
-    void onInventoryClose(InventoryCloseEvent ev)
+    @EventHandler
+    void onInventoryClose(final InventoryCloseEvent ev)
     {
+        if (!check(ev)) return;
+
         // We check if the tools item is still there, if not we re-add it
         boolean found = false;
 
@@ -90,6 +107,25 @@ public class EditInventoryHandler extends InventoryHandler
         if (!found)
         {
             ev.getPlayer().getInventory().setItem(8, getEditGuiOpener());
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent ev)
+    {
+        if (!check(ev)) return;
+
+        final JumpPlate plateType = JumpPlate.getPlateFor(ev.getItemInHand());
+        if (plateType == null) return;
+
+        try
+        {
+            getBJPlayer(ev.getPlayer()).getCurrentJump().addPoint(plateType, ev.getBlockPlaced().getLocation());
+        }
+        catch (IllegalStateException e)
+        {
+            ev.setCancelled(true);
+            ev.getPlayer().sendMessage(ChatColor.RED + "Vous ne pouvez pas placer ceci. " + e.getMessage());
         }
     }
 }

@@ -54,7 +54,7 @@ import java.util.List;
 public class Checkpoint
 {
     private final List<String> numerals = Arrays.asList(
-            "Premier", "Second", "Troisième", "Quatrième", "Cinquième", "Sixième", "Septième", "Huitième", "Neuvième",
+            "Première", "Seconde", "Troisième", "Quatrième", "Cinquième", "Sixième", "Septième", "Huitième", "Neuvième",
             "Dixième", "Onzième", "Douzième", "Treizième", "Quatorzième", "Quinzième", "Seizième", "Dix-septième",
             "Dix-huitième", "Dix-neuvième", "Vingtième", "Vingt-et-unième"
     );
@@ -80,7 +80,7 @@ public class Checkpoint
         this.jump = jump;
         this.location = location;
 
-        this.order = jump.getCheckpoints().size();
+        this.order = jump.getCheckpointsCount();
 
         setName(null);
 
@@ -97,9 +97,9 @@ public class Checkpoint
         if (name == null)
         {
             if (order < numerals.size())
-                this.name = numerals.get(order) + " point de passage";
+                this.name = numerals.get(order) + " étape";
             else
-                this.name = (order + 1) + "ème point de passage";
+                this.name = (order + 1) + "ème étape";
         }
         else this.name = name;
     }

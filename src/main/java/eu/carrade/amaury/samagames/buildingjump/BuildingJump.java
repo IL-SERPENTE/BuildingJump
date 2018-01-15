@@ -36,6 +36,11 @@ import eu.carrade.amaury.samagames.buildingjump.game.BuildingJumpGame;
 import eu.carrade.amaury.samagames.buildingjump.inventories.InventoriesManager;
 import eu.carrade.amaury.samagames.buildingjump.jumps.JumpsLoader;
 import eu.carrade.amaury.samagames.buildingjump.jumps.JumpsManager;
+import eu.carrade.amaury.samagames.buildingjump.listeners.EditListener;
+import eu.carrade.amaury.samagames.buildingjump.listeners.GenericListener;
+import eu.carrade.amaury.samagames.buildingjump.listeners.HubListener;
+import eu.carrade.amaury.samagames.buildingjump.listeners.PlayListener;
+import eu.carrade.amaury.samagames.buildingjump.listeners.TestListener;
 import eu.carrade.amaury.samagames.buildingjump.sidebars.SidebarsManager;
 import eu.carrade.amaury.samagames.buildingjump.worldgen.EmptyWorldGenerator;
 import fr.zcraft.zlib.components.gui.Gui;
@@ -87,21 +92,18 @@ public class BuildingJump extends ZPlugin
         }
 
         game = new BuildingJumpGame();
+        jumpsLoader = loadComponent(JumpsLoader.class);
 
         SamaGamesAPI.get().getGameManager().registerGame(game);
-
-        loadComponents(Gui.class);
-
-        jumpsLoader = loadComponent(JumpsLoader.class);
 
         // IMPORTANT initialize when the worlds are loaded (remember, plugin loaded at startup).
         RunTask.nextTick(() ->
         {
-            loadComponents(SidebarScoreboard.class);
+            loadComponents(Gui.class, SidebarScoreboard.class, GenericListener.class, HubListener.class, EditListener.class, TestListener.class, PlayListener.class);
 
-            jumpsManager = loadComponent(JumpsManager.class);
-            sidebarsManager = loadComponent(SidebarsManager.class);
-            inventoriesManager = loadComponent(InventoriesManager.class);
+            jumpsManager       = loadComponent(JumpsManager.class);
+            sidebarsManager    = loadComponent(SidebarsManager.class);
+            //inventoriesManager = loadComponent(InventoriesManager.class);
 
             for (World world : getServer().getWorlds())
             {

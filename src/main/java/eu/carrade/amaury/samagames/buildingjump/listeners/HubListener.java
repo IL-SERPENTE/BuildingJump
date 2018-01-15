@@ -29,8 +29,10 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package eu.carrade.amaury.samagames.buildingjump.inventories;
+package eu.carrade.amaury.samagames.buildingjump.listeners;
 
+import eu.carrade.amaury.samagames.buildingjump.events.PlayerEntersStateEvent;
+import eu.carrade.amaury.samagames.buildingjump.game.BuildingJumpPlayer;
 import eu.carrade.amaury.samagames.buildingjump.gui.hub.MainGUI;
 import fr.zcraft.zlib.components.gui.Gui;
 import fr.zcraft.zlib.tools.items.ItemStackBuilder;
@@ -38,6 +40,8 @@ import fr.zcraft.zlib.tools.items.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
@@ -45,9 +49,15 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 
-public class HubInventoryHandler extends InventoryHandler
+public class HubListener extends ByStateListener implements Listener
 {
     private static final String MAIN_GUI_OPENER_NAME = ChatColor.AQUA + "Menu principal" + ChatColor.GRAY + " (cliquez)";
+
+    public HubListener()
+    {
+        super(BuildingJumpPlayer.PlayerState.HUB);
+    }
+
 
     private ItemStack getMainGuiOpener()
     {
@@ -58,21 +68,25 @@ public class HubInventoryHandler extends InventoryHandler
                 .item();
     }
 
-    @Override
-    public void setup(Player player)
+    @EventHandler
+    public void onStateEnter(final PlayerEntersStateEvent ev)
     {
-        player.getInventory().setItem(4, getMainGuiOpener());
+        if (!check(ev)) return;
+
+        ev.getPlayer().getInventory().setItem(4, getMainGuiOpener());
     }
 
-    @Override
-    void onInventoryInteract(InventoryInteractEvent ev)
+    @EventHandler
+    void onInventoryInteract(final InventoryInteractEvent ev)
     {
         ev.setCancelled(true);
     }
 
-    @Override
-    void onPlayerInteract(PlayerInteractEvent ev)
+    @EventHandler
+    void onPlayerInteract(final PlayerInteractEvent ev)
     {
+        if (!check(ev)) return;
+
         if (ev.getItem() == null || ev.getItem().getType() == Material.AIR || !ev.getItem().hasItemMeta() || !ev.getItem().getItemMeta().hasDisplayName())
             return;
 
@@ -83,9 +97,11 @@ public class HubInventoryHandler extends InventoryHandler
         }
     }
 
-    @Override
-    void onInventoryClick(InventoryClickEvent ev)
+    @EventHandler
+    void onInventoryClick(final InventoryClickEvent ev)
     {
+        if (!check(ev)) return;
+
         ev.setCancelled(true);
 
         if (ItemUtils.areSimilar(ev.getCursor(), getMainGuiOpener()))
@@ -95,9 +111,11 @@ public class HubInventoryHandler extends InventoryHandler
         }
     }
 
-    @Override
-    void onInventoryDrag(InventoryDragEvent ev)
+    @EventHandler
+    void onInventoryDrag(final InventoryDragEvent ev)
     {
+        if (!check(ev)) return;
+
         ev.setCancelled(true);
     }
 }

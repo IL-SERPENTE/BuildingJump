@@ -29,7 +29,7 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package eu.carrade.amaury.samagames.buildingjump.gui;
+package eu.carrade.amaury.samagames.buildingjump.gui.hub;
 
 import eu.carrade.amaury.samagames.buildingjump.BuildingJump;
 import eu.carrade.amaury.samagames.buildingjump.game.BuildingJumpPlayer;

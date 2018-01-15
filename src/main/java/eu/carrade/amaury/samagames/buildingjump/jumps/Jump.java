@@ -37,6 +37,7 @@ import fr.zcraft.zlib.tools.Callback;
 import org.bukkit.WeatherType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -202,7 +203,17 @@ public class Jump
 
     public List<Checkpoint> getCheckpoints()
     {
-        return checkpoints;
+        return Collections.unmodifiableList(checkpoints);
+    }
+
+    public int getCheckpointsCount()
+    {
+        return checkpoints.size();
+    }
+
+    public void addCheckpoint(Checkpoint checkpoint)
+    {
+        checkpoints.add(checkpoint);
     }
 
     public int getSize()

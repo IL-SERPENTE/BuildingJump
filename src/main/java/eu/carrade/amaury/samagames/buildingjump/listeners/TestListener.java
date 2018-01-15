@@ -29,15 +29,16 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package eu.carrade.amaury.samagames.buildingjump.game;
+package eu.carrade.amaury.samagames.buildingjump.listeners;
 
-import net.samagames.api.games.Game;
+import eu.carrade.amaury.samagames.buildingjump.game.BuildingJumpPlayer;
+import org.bukkit.event.Listener;
 
 
-public class BuildingJumpGame extends Game<BuildingJumpPlayer>
+public class TestListener extends ByStateListener implements Listener
 {
-    public BuildingJumpGame()
+    public TestListener()
     {
-        super("buildingjump", "BuildingJump", "", BuildingJumpPlayer.class);
+        super(BuildingJumpPlayer.PlayerState.TEST);
     }
 }

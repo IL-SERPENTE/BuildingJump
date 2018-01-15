@@ -29,10 +29,11 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package eu.carrade.amaury.samagames.buildingjump.gui;
+package eu.carrade.amaury.samagames.buildingjump.gui.edit;
 
 import eu.carrade.amaury.samagames.buildingjump.BuildingJump;
 import eu.carrade.amaury.samagames.buildingjump.jumps.Jump;
+import eu.carrade.amaury.samagames.buildingjump.jumps.JumpPlate;
 import eu.carrade.amaury.samagames.buildingjump.jumps.PastedJump;
 import eu.carrade.amaury.samagames.buildingjump.utils.Utils;
 import fr.zcraft.zlib.components.gui.ActionGui;
@@ -294,6 +295,18 @@ public class EditGUI extends ActionGui
 
         getJump().setDifficulty(Utils.getNextElement(getJump().getDifficulty(), direction));
         update();
+    }
+
+    @GuiAction ("get_begin_end")
+    protected void get_begin_end(InventoryClickEvent ev)
+    {
+        ev.getView().setCursor(JumpPlate.BEGIN_END.getItem());
+    }
+
+    @GuiAction ("get_checkpoint")
+    protected void get_checkpoint(InventoryClickEvent ev)
+    {
+        ev.getView().setCursor(JumpPlate.CHECKPOINT.getItem());
     }
 
     @GuiAction ("jump_time")

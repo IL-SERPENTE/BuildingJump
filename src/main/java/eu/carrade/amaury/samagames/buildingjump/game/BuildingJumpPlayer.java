@@ -32,6 +32,8 @@
 package eu.carrade.amaury.samagames.buildingjump.game;
 
 import eu.carrade.amaury.samagames.buildingjump.BuildingJump;
+import eu.carrade.amaury.samagames.buildingjump.events.PlayerEntersStateEvent;
+import eu.carrade.amaury.samagames.buildingjump.events.PlayerLeavesStateEvent;
 import eu.carrade.amaury.samagames.buildingjump.jumps.Jump;
 import eu.carrade.amaury.samagames.buildingjump.jumps.PastedJump;
 import fr.zcraft.zlib.components.worker.WorkerCallback;
@@ -152,13 +154,13 @@ public class BuildingJumpPlayer extends GamePlayer
     {
         if (this.state != null)
         {
-            BuildingJump.get().getInventoriesManager().getHandler(this.state).tearDown(getPlayerIfOnline());
+            BuildingJump.get().getServer().getPluginManager().callEvent(new PlayerLeavesStateEvent(this, this.state));
         }
 
-        PluginLogger.info("Switching player {0} state to {1}", getOfflinePlayer().getName(), state.name());
+        PluginLogger.info("Switching player {0} state to {1}", getOfflinePlayer().getName(), state);
 
         this.state = state;
-        BuildingJump.get().getInventoriesManager().getHandler(this.state).setup(getPlayerIfOnline());
+        BuildingJump.get().getServer().getPluginManager().callEvent(new PlayerEntersStateEvent(this, this.state));
     }
 
     public void switchToHub()
